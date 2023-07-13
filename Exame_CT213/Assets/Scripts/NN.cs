@@ -2,7 +2,7 @@
 
 public class NN : MonoBehaviour
 {
-    int [] networkShape = {5,32,2};
+    int [] networkShape = {5,32,23,2};
     public Layer [] layers;
 
     // Awake is called when the script instance is being loaded.
