@@ -32,8 +32,6 @@ func generate_first_generation():
 
 func natural_selection():
 	spaceships.sort_custom(func(a, b): return a.position.y > b.position.y)
-	print(spaceships[0].position.y)
-	print(spaceships[1].position.y)
 	for i in range(spaceships.size()):
 		spaceships[i].position = Vector3.ZERO
 		spaceships[i].rotation = Vector3.ZERO
