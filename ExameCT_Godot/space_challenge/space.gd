@@ -3,7 +3,7 @@ extends Node3D
 @export_file() var spaceship_scene
 @export var spaceships : Array[Node]
 
-const SELECTION_TIME = 3
+const SELECTION_TIME = 1
 const QUANTITY = 50
 const SELECTED_QUANTITY = 10
 

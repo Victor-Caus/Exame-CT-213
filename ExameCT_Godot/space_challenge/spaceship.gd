@@ -20,5 +20,5 @@ func _physics_process(_delta):
 	for i in range(output.size()):
 		output[i] = clamp(output[i], -1, 1)
 	apply_central_force(-basis.z * THRUST * output[0])
-	var torque = Vector3(output[1], output[2], output[3]) * get_inverse_inertia_tensor()
+	var torque = Vector3(output[1], output[2], output[3])
 	apply_torque(torque)

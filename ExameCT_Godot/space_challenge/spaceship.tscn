@@ -9,6 +9,7 @@
 
 [node name="Spaceship" type="RigidBody3D"]
 collision_mask = 2
+inertia = Vector3(1, 1, 1)
 script = ExtResource("1_rlkvt")
 
 [node name="NN" type="Node" parent="."]
