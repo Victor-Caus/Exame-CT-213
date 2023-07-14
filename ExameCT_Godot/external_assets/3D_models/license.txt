@@ -1,0 +1,11 @@
+Model Information:
+* title:	Sonic Ring
+* source:	https://sketchfab.com/3d-models/sonic-ring-c29f9d6807894907b47c50d30fb51f99
+* author:	Shuaib_Ahmed (https://sketchfab.com/Shuaib_Ahmed)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Sonic Ring" (https://sketchfab.com/3d-models/sonic-ring-c29f9d6807894907b47c50d30fb51f99) by Shuaib_Ahmed (https://sketchfab.com/Shuaib_Ahmed) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
