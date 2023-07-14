@@ -3,7 +3,7 @@ extends Node3D
 @export_file() var spaceship_scene
 @export var spaceships : Array[Node]
 
-const SELECTION_TIME = 1
+const SELECTION_TIME = 3
 const QUANTITY = 50
 const SELECTED_QUANTITY = 10
 
@@ -36,6 +36,9 @@ func natural_selection():
 	print(spaceships[1].position.y)
 	for i in range(spaceships.size()):
 		spaceships[i].position = Vector3.ZERO
+		spaceships[i].rotation = Vector3.ZERO
+		spaceships[i].linear_velocity = Vector3.ZERO
+		spaceships[i].angular_velocity = Vector3.ZERO
 	for i in range(SELECTED_QUANTITY, spaceships.size()):
 		spaceships[i].nn.layers = spaceships[i%SELECTED_QUANTITY].nn.copyLayers()
 		spaceships[i].mutate()

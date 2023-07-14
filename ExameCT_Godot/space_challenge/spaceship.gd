@@ -1,17 +1,24 @@
 extends RigidBody3D
 
+const THRUST = 100.0
+const TURN_ACCELERATION = 10.0
+
 var nn : NN
 var time = 0
 
-# Called when the node enters the scene tree for the first time.
+
 func _ready():
 	nn = $NN
 
+
 func mutate():
-	nn.mutateNetwork(0.01, 1)
+	nn.mutateNetwork(0.05, 0.1)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(delta):
-	var output = nn.brain([position.x, position.y, position.z])
-	linear_velocity = (Vector3(output[0], output[1], output[2]))
 
+func _physics_process(_delta):
+	var output = nn.brain([rotation.x, rotation.y, rotation.z])
+	for i in range(output.size()):
+		output[i] = clamp(output[i], -1, 1)
+	apply_central_force(-basis.z * THRUST * output[0])
+	var torque = Vector3(output[1], output[2], output[3]) * get_inverse_inertia_tensor()
+	apply_torque(torque)

@@ -11,5 +11,10 @@ config_version=5
 [application]
 
 config/name="ExameCT_Godot"
+run/main_scene="res://space_challenge/space.tscn"
 config/features=PackedStringArray("4.1", "Forward Plus")
 config/icon="res://icon.svg"
+
+[physics]
+
+3d/default_gravity=0.0
