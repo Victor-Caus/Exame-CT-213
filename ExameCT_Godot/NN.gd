@@ -2,7 +2,7 @@ extends Node
 
 class_name NN
 
-var networkShape := [5, 32, 23, 2]
+@export var networkShape := [5, 32, 23, 2]
 var layers : Array
 
 func _ready():
@@ -29,8 +29,8 @@ func copyLayers() -> Array:
 	var tmpLayers : Array = []
 	for i in range(layers.size()):
 		var tmpLayer = Layer.new(networkShape[i], networkShape[i+1])
-		tmpLayer.weightsArray = layers[i].weightsArray.duplicate()
-		tmpLayer.biasesArray = layers[i].biasesArray.duplicate()
+		tmpLayer.weightsArray = layers[i].weightsArray.duplicate(true)
+		tmpLayer.biasesArray = layers[i].biasesArray.duplicate(true)
 		tmpLayers.append(tmpLayer)
 
 	return tmpLayers

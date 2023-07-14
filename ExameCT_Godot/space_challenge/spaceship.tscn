@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://drtfacb0adeqa"]
+
+[ext_resource type="Script" path="res://space_challenge/spaceship.gd" id="1_rlkvt"]
+[ext_resource type="Script" path="res://NN.gd" id="1_x41d4"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_rj3fa"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5stq8"]
+
+[node name="Spaceship" type="RigidBody3D"]
+collision_mask = 2
+script = ExtResource("1_rlkvt")
+
+[node name="NN" type="Node" parent="."]
+script = ExtResource("1_x41d4")
+networkShape = [3, 32, 32, 3]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_rj3fa")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_5stq8")
