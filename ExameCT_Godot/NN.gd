@@ -41,6 +41,10 @@ class Layer:
 	var nodeArray : Array
 	var n_inputs : int
 	var n_neurons : int
+	# PSO vars
+	var weightsVelocities : Array[Array]
+	var biasesVelocities : Array
+	var maxVelocity 
 
 	func _init(n_inputs, n_neurons):
 		self.n_inputs = n_inputs
@@ -70,6 +74,30 @@ class Layer:
 			nodeArray[i] = tanh(nodeArray[i])
 
 	func mutateLayer(mutationChance : float, mutationAmount : float):
+		for i in range(n_neurons):
+			for j in range(n_inputs):
+				if randf() < mutationChance:
+					weightsArray[i][j] += randf_range(-1.0, 1.0) * mutationAmount
+
+			if randf() < mutationChance:
+				biasesArray[i] += randf_range(-1.0, 1.0) * mutationAmount
+				
+				
+	func PSO_InitializeLayer(mutationChance : float, mutationAmount : float, maxVel: float):
+		for i in range(n_neurons):
+			for j in range(n_inputs):
+				weightsArray[i][j] = 0
+				if randf() < mutationChance:
+					weightsArray[i][j] += randf_range(-1.0, 1.0) * mutationAmount
+				weightsVelocities[i][j] = randf_range(-1.0, 1.0) * maxVelocity
+				
+			biasesArray[i] = 0	
+			if randf() < mutationChance:
+				biasesArray[i] += randf_range(-1.0, 1.0) * mutationAmount
+			biasesVelocities[i] = randf_range(-1.0, 1.0) * maxVelocity
+				
+				
+	func PSO_MutateLayer(mutationChance : float, mutationAmount : float):
 		for i in range(n_neurons):
 			for j in range(n_inputs):
 				if randf() < mutationChance:

@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://c528fuj0a8gb8"]
+
+[ext_resource type="PackedScene" uid="uid://cqdeuttk8r1g7" path="res://external_assets/3D_models/scene.gltf" id="1_o8bo0"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_rbja8"]
+height = 0.0984792
+
+[node name="Sonic Ring" instance=ExtResource("1_o8bo0")]
+
+[node name="pTorus1" parent="Sketchfab_model/af1ddfe8b2d041c59f62180fd56eef95_fbx/RootNode" index="0"]
+transform = Transform3D(0.25, 0, 0, 0, -1.09278e-08, -0.25, 0, 0.25, -1.09278e-08, 0, 0, 0)
+
+[node name="Area3D" type="Area3D" parent="." index="1"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+shape = SubResource("CylinderShape3D_rbja8")
