@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://ditfwqhfubkxk"]
 
-[ext_resource type="Script" path="res://space_challenge/space.gd" id="1_kto00"]
+[ext_resource type="Script" path="res://space_challenge/Optimization_Algorithms/PSO.gd" id="1_6oij1"]
 [ext_resource type="Texture2D" uid="uid://bpxcnqh5s1xr4" path="res://external_assets/SpaceSkyMap.png" id="2_ebyit"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_rmgya"]
@@ -14,7 +14,7 @@ background_mode = 2
 sky = SubResource("Sky_tqprb")
 
 [node name="space" type="Node3D"]
-script = ExtResource("1_kto00")
+script = ExtResource("1_6oij1")
 spaceship_scene = "res://space_challenge/spaceship.tscn"
 
 [node name="Camera3D" type="Camera3D" parent="."]

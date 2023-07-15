@@ -5,10 +5,17 @@ class_name NN
 @export var networkShape := [5, 32, 23, 2]
 var layers : Array
 
+# PSO:
+var isPSO: bool = true
+
 func _ready():
 	layers = []
 	for i in range(networkShape.size() - 1):
 		layers.append(Layer.new(networkShape[i], networkShape[i+1]))
+		
+	if isPSO:
+		for layer in layers:
+			layer.PSO_InitializeLayer(1, 1, 2) # Hyperparameters!
 
 	randomize()
 
@@ -54,10 +61,14 @@ class Layer:
 		biasesArray = []
 		for i in range(n_neurons):
 			var row = []
+			var row_v = []
 			for j in range(n_inputs):
 				row.append(0.0)
+				row_v.append(0.0)
 			weightsArray.append(row)
+			weightsVelocities.append(row_v)
 			biasesArray.append(0.0)
+			biasesVelocities.append(0.0)
 
 	func forward(inputsArray : Array):
 		nodeArray = []
@@ -89,23 +100,30 @@ class Layer:
 				weightsArray[i][j] = 0
 				if randf() < mutationChance:
 					weightsArray[i][j] += randf_range(-1.0, 1.0) * mutationAmount
-				weightsVelocities[i][j] = randf_range(-1.0, 1.0) * maxVelocity
+				weightsVelocities[i][j] = randf_range(-1.0, 1.0) * maxVel
 				
 			biasesArray[i] = 0	
 			if randf() < mutationChance:
 				biasesArray[i] += randf_range(-1.0, 1.0) * mutationAmount
-			biasesVelocities[i] = randf_range(-1.0, 1.0) * maxVelocity
+			biasesVelocities[i] = randf_range(-1.0, 1.0) * maxVel
 				
 				
-	func PSO_MutateLayer(mutationChance : float, mutationAmount : float):
+	func PSO_MutateLayer(inertia_weight : float, cognitive_p : float, social_p: float,  best_particular : Layer, best_global : Layer):
 		for i in range(n_neurons):
 			for j in range(n_inputs):
-				if randf() < mutationChance:
-					weightsArray[i][j] += randf_range(-1.0, 1.0) * mutationAmount
-
-			if randf() < mutationChance:
-				biasesArray[i] += randf_range(-1.0, 1.0) * mutationAmount
+				weightsVelocities[i][j] = inertia_weight * weightsVelocities[i][j] + cognitive_p * randf_range(0, 1.0) * (best_particular.weightsArray[i][j] - weightsArray[i][j]) + social_p * randf_range(0, 1.0) * (best_global.weightsArray[i][j] - weightsArray[i][j]) 
+				weightsArray[i][j] += weightsVelocities[i][j]
+				
+			biasesVelocities[i] += inertia_weight * biasesVelocities[i] + cognitive_p * randf_range(0, 1.0) * (best_particular.biasesArray[i] - biasesArray[i]) + social_p * randf_range(0, 1.0) * (best_global.biasesArray[i] - biasesArray[i]) 
+			biasesArray[i] += biasesVelocities[i]
 
 func mutateNetwork(mutationChance : float, mutationAmount : float):
 	for layer in layers:
 		layer.mutateLayer(mutationChance, mutationAmount)
+		
+func PSO(inertia_weight : float, cognitive_p : float, social_p: float, best_global : NN):
+	for i in range(layers.size()):
+		var layer = layers[i]
+		var best_particular = get_child(0).layers[i]
+		var best_global_layer = best_global.layers[i] 
+		layer.PSO_MutateLayer(inertia_weight, cognitive_p, social_p,  best_particular, best_global_layer)

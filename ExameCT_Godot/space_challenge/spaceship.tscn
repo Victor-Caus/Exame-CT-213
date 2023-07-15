@@ -16,6 +16,10 @@ script = ExtResource("1_rlkvt")
 script = ExtResource("1_x41d4")
 networkShape = [3, 32, 32, 4]
 
+[node name="BestParticular" type="Node" parent="NN"]
+script = ExtResource("1_x41d4")
+networkShape = [3, 32, 32, 4]
+
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
 mesh = SubResource("CapsuleMesh_rj3fa")

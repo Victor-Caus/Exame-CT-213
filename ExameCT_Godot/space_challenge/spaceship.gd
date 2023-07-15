@@ -4,10 +4,13 @@ const THRUST = 50.0
 const TURN_ACCELERATION = 10.0
 
 var nn : NN
-
+var reward : float
+var best_reward: float
 
 func _ready():
 	nn = $NN
+	reward = 0
+	best_reward = -INF
 
 
 func _physics_process(_delta):
