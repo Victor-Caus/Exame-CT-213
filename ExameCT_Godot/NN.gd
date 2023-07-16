@@ -114,7 +114,7 @@ class Layer:
 				weightsVelocities[i][j] = inertia_weight * weightsVelocities[i][j] + cognitive_p * randf_range(0, 1.0) * (best_particular.weightsArray[i][j] - weightsArray[i][j]) + social_p * randf_range(0, 1.0) * (best_global.weightsArray[i][j] - weightsArray[i][j]) 
 				weightsArray[i][j] += weightsVelocities[i][j]
 				
-			biasesVelocities[i] += inertia_weight * biasesVelocities[i] + cognitive_p * randf_range(0, 1.0) * (best_particular.biasesArray[i] - biasesArray[i]) + social_p * randf_range(0, 1.0) * (best_global.biasesArray[i] - biasesArray[i]) 
+			biasesVelocities[i] = inertia_weight * biasesVelocities[i] + cognitive_p * randf_range(0, 1.0) * (best_particular.biasesArray[i] - biasesArray[i]) + social_p * randf_range(0, 1.0) * (best_global.biasesArray[i] - biasesArray[i]) 
 			biasesArray[i] += biasesVelocities[i]
 
 func mutateNetwork(mutationChance : float, mutationAmount : float):
@@ -124,6 +124,6 @@ func mutateNetwork(mutationChance : float, mutationAmount : float):
 func PSO(inertia_weight : float, cognitive_p : float, social_p: float, best_global : NN):
 	for i in range(layers.size()):
 		var layer = layers[i]
-		var best_particular = get_child(0).layers[i]
-		var best_global_layer = best_global.layers[i] 
+		var best_particular = get_parent().bestParticular.layers[i]
+		var best_global_layer = best_global.layers[i]
 		layer.PSO_MutateLayer(inertia_weight, cognitive_p, social_p,  best_particular, best_global_layer)

@@ -24,7 +24,7 @@ script = ExtResource("1_rlkvt")
 script = ExtResource("1_x41d4")
 networkShape = [3, 32, 32, 4]
 
-[node name="BestParticular" type="Node" parent="NN"]
+[node name="BestParticular" type="Node" parent="."]
 script = ExtResource("1_x41d4")
 networkShape = [3, 32, 32, 4]
 

@@ -4,11 +4,13 @@ const THRUST = 50.0
 const TURN_ACCELERATION = 10.0
 
 var nn : NN
+var bestParticular : NN
 var reward : float
 var best_reward: float
 
 func _ready():
 	nn = $NN
+	bestParticular = $BestParticular
 	reward = 0
 	best_reward = -INF
 

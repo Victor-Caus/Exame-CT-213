@@ -11,16 +11,22 @@ const SELECTED_QUANTITY = 10
 const INITIAL_MUTATION_CHANCE = 1
 const INITIAL_VARIABILITY = 1
 const MAX_INITIAL_VELOCITY = 2 * INITIAL_VARIABILITY
-var INERTIA_WEIGHT : float = 0.9
+var INERTIA_WEIGHT : float = 0.9 #0.9
 const INERTIA_SCHEDULE = 0.01
-const COGNITIVE_P = 0.6
-const SOCIAL_P = 0.8
+var COGNITIVE_P = 0.6 #0.6
+const SOCIAL_P = 0.8 #0.8
 
 var iteration : int = 0
 var time := 0.0
 
+# global max:
+var globalBest : NN
+var globalBestReward : float
+
 
 func _ready():
+	globalBest = NN.new()
+	globalBestReward = -INF
 	generate_first_generation()
 	iteration = 0
 
@@ -38,7 +44,7 @@ func generate_first_generation():
 		var spaceship = spaceship_resource.instantiate()
 		add_child(spaceship)
 		spaceships.push_back(spaceship)
-		
+	
 
 func natural_selection():
 	# In this example let's give the reward only in selection:
@@ -48,10 +54,17 @@ func natural_selection():
 		if spaceship.reward > spaceship.best_reward:
 			spaceship.best_reward = spaceship.reward
 			# Copy the current NN as the best NN of this particle
-			spaceship.get_child(0).get_child(0).layers = spaceship.get_child(0).copyLayers()
+			spaceship.bestParticular.layers = spaceship.nn.copyLayers()
 	
 	# sort so we can get the max
 	spaceships.sort_custom(func(a, b): return a.reward > b.reward)
+	
+	print(globalBestReward)
+	# Check if the best of the generation is the global best:
+	if spaceships[0].reward > globalBestReward:
+		print(globalBestReward)
+		globalBestReward = spaceships[0].reward
+		globalBest.layers = spaceships[0].nn.copyLayers()
 	
 	#debug
 	print(iteration)
@@ -63,9 +76,10 @@ func natural_selection():
 		spaceship.rotation = Vector3.ZERO
 		spaceship.linear_velocity = Vector3.ZERO
 		spaceship.angular_velocity = Vector3.ZERO
-		spaceship.get_child(0).PSO(INERTIA_WEIGHT, COGNITIVE_P, SOCIAL_P, spaceships[0].get_child(0))
+		spaceship.nn.PSO(INERTIA_WEIGHT, COGNITIVE_P, SOCIAL_P, globalBest)
 	
 	# Schedule for inertia weight
 	iteration += 1
-	INERTIA_WEIGHT = INERTIA_WEIGHT / 1 + INERTIA_SCHEDULE * iteration
+	INERTIA_WEIGHT = INERTIA_WEIGHT / (1 + INERTIA_SCHEDULE * iteration)
+	COGNITIVE_P = COGNITIVE_P / (1 + INERTIA_SCHEDULE * iteration)
 
