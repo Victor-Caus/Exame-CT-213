@@ -1,6 +1,6 @@
 extends Node3D
 
-@export_file() var spaceship_scene
+@export_file("*.tscn") var spaceship_scene
 @export var spaceships : Array[Node]
 
 const SELECTION_TIME = 1
