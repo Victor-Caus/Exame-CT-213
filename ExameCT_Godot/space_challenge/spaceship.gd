@@ -3,7 +3,9 @@ extends RigidBody3D
 class_name Spaceship
 
 const THRUST = 50.0
-const TURN_ACCELERATION = 25.0
+const TURN_PITCH = 10.0
+const TURN_YAW = 2.0
+const TURN_ROLL = 5.0
 
 var nn : NN
 var bestParticular : NN
@@ -37,5 +39,5 @@ func _physics_process(_delta):
 	for i in range(output.size()):
 		output[i] = clamp(output[i], -1, 1)
 	apply_central_force(-basis.z * THRUST * (output[0] + 1)/2)
-	var torque = quaternion * Vector3(output[1], output[2], output[3]) * TURN_ACCELERATION
+	var torque = quaternion * Vector3(output[1] * TURN_PITCH, output[2] * TURN_YAW, output[3] * TURN_ROLL)
 	apply_torque(torque)

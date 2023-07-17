@@ -18,5 +18,5 @@ config/icon="res://external_assets/2D_assets/icon.svg"
 [physics]
 
 3d/default_gravity=0.0
-3d/default_linear_damp=1.0
+3d/default_linear_damp=2.0
 3d/default_angular_damp=5.0

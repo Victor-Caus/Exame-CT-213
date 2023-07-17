@@ -14,6 +14,12 @@ static func spawn(root:Node, new_trans:Transform3D):
 	return ring
 
 
+func clear_sequence():
+	if second_ring and is_instance_valid(second_ring):
+		second_ring.clear_sequence()
+		second_ring.queue_free()
+
+
 func _on_body_entered(body):
 	initial_positions[body] = body.position
 
@@ -32,7 +38,8 @@ func _on_body_exited(body):
 			
 			if not second_ring: #creates a new target if there is not enough
 				var new_pos = Vector3(randf()*4-2, randf()*4-2, -(randf()*4+6)) + position
-				var new_basis = basis
-				var new_transform = Transform3D(basis, new_pos)
+				var rot_vec = Vector3(randf(), randf(), randf()) * 0.5
+				var new_basis = basis.rotated(rot_vec.normalized(), rot_vec.length())
+				var new_transform = Transform3D(new_basis, new_pos)
 				second_ring = Ring.spawn(get_parent(), new_transform)
 			body.next_target = second_ring
