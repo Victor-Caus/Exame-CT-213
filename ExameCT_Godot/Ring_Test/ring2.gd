@@ -7,10 +7,10 @@ const RING_SCENE_FILE = "res://Ring_Test/ring2.tscn"
 var initial_positions : Dictionary
 var second_ring : Node
 
-static func spawn(root:Node, pos:Vector3):
+static func spawn(root:Node, new_trans:Transform3D):
 	var ring = load(RING_SCENE_FILE).instantiate()
 	root.add_child(ring)
-	ring.position = pos
+	ring.transform = new_trans
 	return ring
 
 
@@ -32,5 +32,7 @@ func _on_body_exited(body):
 			
 			if not second_ring: #creates a new target if there is not enough
 				var new_pos = Vector3(randf()*4-2, randf()*4-2, -(randf()*4+6)) + position
-				second_ring = Ring.spawn(get_parent(), new_pos)
+				var new_basis = basis
+				var new_transform = Transform3D(basis, new_pos)
+				second_ring = Ring.spawn(get_parent(), new_transform)
 			body.next_target = second_ring

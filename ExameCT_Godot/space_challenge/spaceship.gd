@@ -25,12 +25,12 @@ func _physics_process(_delta):
 	
 	var relative_pos_1 = quaternion.inverse()*(target.position - position)
 	input.append_array([relative_pos_1.x, relative_pos_1.y, relative_pos_1.z])
-	var dir_1 = quaternion.inverse()*target.basis.z
+	var dir_1 = quaternion.inverse()*target.basis.z # Ring direction
 	input.append_array([dir_1.x, dir_1.y, dir_1.z])
 	
 	var relative_pos_2 = quaternion.inverse()*(next_target.position - position)
 	input.append_array([relative_pos_2.x, relative_pos_2.y, relative_pos_2.z])
-	var dir_2 = quaternion.inverse()*next_target.basis.z
+	var dir_2 = quaternion.inverse()*next_target.basis.z # Ring direction
 	input.append_array([dir_2.x, dir_2.y, dir_2.z])
 	
 	var output = nn.brain(input)
