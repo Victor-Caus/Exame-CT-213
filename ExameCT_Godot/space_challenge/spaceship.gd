@@ -1,5 +1,7 @@
 extends RigidBody3D
 
+class_name Spaceship
+
 const THRUST = 50.0
 const TURN_ACCELERATION = 10.0
 
@@ -7,6 +9,8 @@ var nn : NN
 var bestParticular : NN
 var reward : float
 var best_reward: float
+var target
+var next_target
 
 func _ready():
 	nn = $NN

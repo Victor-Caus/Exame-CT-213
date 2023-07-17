@@ -43,13 +43,15 @@ func generate_first_generation():
 	for i in range(QUANTITY):
 		var spaceship = spaceship_resource.instantiate()
 		add_child(spaceship)
+		spaceship.target = %Ring1
+		spaceship.next_target = %Ring2
 		spaceships.push_back(spaceship)
+		
 	
 
 func natural_selection():
 	# In this example let's give the reward only in selection:
 	for spaceship in spaceships:
-		spaceship.reward = spaceship.position.y
 		# Update best spaceship
 		if spaceship.reward > spaceship.best_reward:
 			spaceship.best_reward = spaceship.reward
@@ -70,12 +72,15 @@ func natural_selection():
 	print(iteration)
 	print(spaceships[0].reward)
 	
-	# Reset positions of spaceships
+	# Reset positions, velocities, targets and rewards of spaceships
 	for spaceship in spaceships:
 		spaceship.position = Vector3.ZERO
 		spaceship.rotation = Vector3.ZERO
 		spaceship.linear_velocity = Vector3.ZERO
 		spaceship.angular_velocity = Vector3.ZERO
+		spaceship.target = %Ring1
+		spaceship.next_target = %Ring2
+		spaceship.reward = 0
 		spaceship.nn.PSO(INERTIA_WEIGHT, COGNITIVE_P, SOCIAL_P, globalBest)
 	
 	# Schedule for inertia weight

@@ -27,5 +27,10 @@ transform = Transform3D(0.875042, -0.418578, 0.24309, 0, 0.502205, 0.864748, -0.
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_3y7q2")
 
-[node name="Area3D" parent="." instance=ExtResource("3_wvdik")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.79788)
+[node name="Ring1" parent="." instance=ExtResource("3_wvdik")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.17721, 0.351, -2.37806)
+
+[node name="Ring2" parent="." instance=ExtResource("3_wvdik")]
+unique_name_in_owner = true
+transform = Transform3D(0.949332, 0, 0.314274, 0, 1, 0, -0.314274, 0, 0.949332, -0.966661, 0.47952, -7.25567)

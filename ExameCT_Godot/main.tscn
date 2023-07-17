@@ -1,8 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://msvcgx4pexix"]
-
-[ext_resource type="Script" path="res://NN.gd" id="1_58rw4"]
-
-[node name="Node3D" type="Node3D"]
-
-[node name="NN" type="Node" parent="."]
-script = ExtResource("1_58rw4")
