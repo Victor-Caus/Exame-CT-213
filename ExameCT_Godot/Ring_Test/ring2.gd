@@ -27,7 +27,7 @@ func _on_body_exited(body):
 		initial_positions.erase(body)
 		
 		if product < 0 and body is Spaceship and body.target == self:
-			body.reward += 1
+			body.reward += 1 - get_parent().time*0.01
 			body.target = body.next_target
 			
 			if not second_ring: #creates a new target if there is not enough

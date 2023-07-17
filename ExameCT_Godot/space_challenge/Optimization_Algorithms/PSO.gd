@@ -3,7 +3,7 @@ extends Node3D
 @export_file() var spaceship_scene
 @export var spaceships : Array[Node]
 
-const SELECTION_TIME = 1
+const SELECTION_TIME = 3
 const QUANTITY = 50
 const SELECTED_QUANTITY = 10
 
@@ -42,9 +42,9 @@ func generate_first_generation():
 	var spaceship_resource = load(spaceship_scene) as PackedScene
 	for i in range(QUANTITY):
 		var spaceship = spaceship_resource.instantiate()
-		add_child(spaceship)
 		spaceship.target = %Ring1
 		spaceship.next_target = %Ring2
+		add_child(spaceship)
 		spaceships.push_back(spaceship)
 		
 	
@@ -52,6 +52,7 @@ func generate_first_generation():
 func natural_selection():
 	# In this example let's give the reward only in selection:
 	for spaceship in spaceships:
+		spaceship.reward -= spaceship.position.distance_to(spaceship.target.position) * 0.01
 		# Update best spaceship
 		if spaceship.reward > spaceship.best_reward:
 			spaceship.best_reward = spaceship.reward
@@ -72,8 +73,10 @@ func natural_selection():
 	print(iteration)
 	print(spaceships[0].reward)
 	
-	# Reset positions, velocities, targets and rewards of spaceships
 	for spaceship in spaceships:
+		# Update PSO
+		spaceship.nn.PSO(INERTIA_WEIGHT, COGNITIVE_P, SOCIAL_P, globalBest)
+		# Reset positions, velocities, targets and rewards of spaceships
 		spaceship.position = Vector3.ZERO
 		spaceship.rotation = Vector3.ZERO
 		spaceship.linear_velocity = Vector3.ZERO
@@ -81,7 +84,6 @@ func natural_selection():
 		spaceship.target = %Ring1
 		spaceship.next_target = %Ring2
 		spaceship.reward = 0
-		spaceship.nn.PSO(INERTIA_WEIGHT, COGNITIVE_P, SOCIAL_P, globalBest)
 	
 	# Schedule for inertia weight
 	iteration += 1

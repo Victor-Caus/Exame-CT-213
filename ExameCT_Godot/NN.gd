@@ -102,7 +102,7 @@ class Layer:
 					weightsArray[i][j] += randf_range(-1.0, 1.0) * mutationAmount
 				weightsVelocities[i][j] = randf_range(-1.0, 1.0) * maxVel
 				
-			biasesArray[i] = 0	
+			biasesArray[i] = 0
 			if randf() < mutationChance:
 				biasesArray[i] += randf_range(-1.0, 1.0) * mutationAmount
 			biasesVelocities[i] = randf_range(-1.0, 1.0) * maxVel
