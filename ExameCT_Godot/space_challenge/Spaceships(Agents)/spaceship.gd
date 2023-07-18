@@ -1,6 +1,6 @@
 extends RigidBody3D
 
-class_name Spaceship
+class_name Spaceship_DQN
 
 const THRUST = 50.0
 const TURN_PITCH = 10.0
@@ -20,8 +20,9 @@ func _ready():
 	reward = 0
 	best_reward = -INF
 
-
+# Each physical time step:
 func _physics_process(_delta):
+	# Analyze the environment state
 	var input = [linear_velocity.x, linear_velocity.y, linear_velocity.z]
 	input.append_array([angular_velocity.x, angular_velocity.y, angular_velocity.z])
 	
@@ -34,7 +35,8 @@ func _physics_process(_delta):
 	input.append_array([relative_pos_2.x, relative_pos_2.y, relative_pos_2.z])
 	var dir_2 = quaternion.inverse()*next_target.basis.z # Ring direction
 	input.append_array([dir_2.x, dir_2.y, dir_2.z])
-
+	
+	# Select action based on epsilon-greedy policy:
 	var output = nn.brain(input)
 	for i in range(output.size()):
 		output[i] = clamp(output[i], -1, 1)
@@ -42,3 +44,4 @@ func _physics_process(_delta):
 	
 	var torque = quaternion * Vector3(output[1] * TURN_PITCH, output[2] * TURN_YAW, output[3] * TURN_ROLL)
 	apply_torque(torque)
+
