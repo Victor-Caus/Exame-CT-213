@@ -3,7 +3,7 @@ extends Node3D
 @export_file() var spaceship_scene
 @export var spaceships : Array[Node]
 
-const SELECTION_TIME = 3
+var SELECTION_TIME = 3
 const QUANTITY = 50
 const SELECTED_QUANTITY = 10
 
@@ -35,12 +35,11 @@ func _ready():
 
 func _physics_process(delta):
 	time += delta
-	
 	# Natural selection occurs every SELECTION_TIME seconds
 	while time > SELECTION_TIME:
-		natural_selection()
+		natural_selection()		
 		time -= SELECTION_TIME
-
+		SELECTION_TIME = 3
 
 func generate_first_generation():
 	# Prepare the rings
