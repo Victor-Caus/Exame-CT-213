@@ -38,7 +38,7 @@ func generate_first_generation():
 		reset_spaceship(spaceship)
 		add_child(spaceship)
 		spaceships.push_back(spaceship)
-		spaceship.nn.mutateNetwork(1, 1)
+		spaceship.nn.mutateNetwork(1)
 
 
 func natural_selection():
@@ -57,9 +57,9 @@ func natural_selection():
 	history.append(spaceships[0].reward)
 	
 	# Selection and mutation
-	for i in range(SELECTED_QUANTITY, spaceships.size()):
-		spaceships[i].nn.layers = spaceships[i%SELECTED_QUANTITY].nn.copyLayers()
-		spaceships[i].nn.mutateNetwork(0.1, 0.5)
+	for i in range(1, spaceships.size()):
+		spaceships[i].nn.layers = spaceships[0].nn.copyLayers()
+		spaceships[i].nn.mutateNetwork(0.1)
 	
 	# Reset positions, velocities, targets and rewards of spaceships
 	for spaceship in spaceships:
