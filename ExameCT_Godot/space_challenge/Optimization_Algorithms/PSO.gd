@@ -37,7 +37,7 @@ func _physics_process(delta):
 	time += delta
 	# Natural selection occurs every SELECTION_TIME seconds
 	while time > SELECTION_TIME:
-		natural_selection()		
+		natural_selection()
 		time -= SELECTION_TIME
 		SELECTION_TIME = 3
 

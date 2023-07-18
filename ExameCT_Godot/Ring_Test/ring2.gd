@@ -30,5 +30,3 @@ func _on_body_exited(body):
 		# Reward the spaceship by passing through the ring
 		if product < 0 and "reward" in body and "target" in body and body.target == self:
 			ring_scored.emit(body)
-#			body.reward += 1 - get_parent().get_parent().time*0.01
-#			body.target = body.next_target

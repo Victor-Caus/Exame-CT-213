@@ -5,7 +5,6 @@ extends Node3D
 
 var SELECTION_TIME = 3
 const QUANTITY = 50
-const SELECTED_QUANTITY = 10
 
 var time := 0.0
 var ring_manager : Node3D
@@ -25,7 +24,7 @@ func _physics_process(delta):
 	while time > SELECTION_TIME:
 		natural_selection()
 		time -= SELECTION_TIME
-
+		SELECTION_TIME = 3
 
 func generate_first_generation():
 	# Prepare the rings
@@ -47,7 +46,8 @@ func natural_selection():
 	
 	# Punish the ships that got to far from their target
 	for spaceship in spaceships:
-		spaceship.reward -= spaceship.position.distance_to(spaceship.target.position) * 0.01
+		spaceship.reward -= spaceship.position.distance_to(spaceship.target.position) * 0.001\
+		 + 0.01 * (time - spaceship.time_last_ring)**2
 	
 	# Sort the fittest spaceships
 	spaceships.sort_custom(func(a, b): return a.reward > b.reward)
@@ -59,7 +59,7 @@ func natural_selection():
 	# Selection and mutation
 	for i in range(1, spaceships.size()):
 		spaceships[i].nn.layers = spaceships[0].nn.copyLayers()
-		spaceships[i].nn.mutateNetwork(0.1)
+		spaceships[i].nn.mutateNetwork(0.2)
 	
 	# Reset positions, velocities, targets and rewards of spaceships
 	for spaceship in spaceships:
@@ -75,3 +75,4 @@ func reset_spaceship(spaceship):
 	spaceship.target = ring_manager.rings[0]
 	spaceship.next_target = ring_manager.rings[1]
 	spaceship.reward = 0
+	spaceship.time_last_ring = 0
