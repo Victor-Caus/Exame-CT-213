@@ -6,7 +6,7 @@ class_name NN
 var layers : Array
 
 # Save and Load System:
-var loadNN : bool = false
+var autoloadNN : bool = false
 
 # PSO:
 var isPSO: bool = true
@@ -20,8 +20,8 @@ func _ready():
 	for i in range(networkShape.size() - 1):
 		layers.append(Layer.new(networkShape[i], networkShape[i+1]))
 	
-	if loadNN:
-		layers = loadLayers()
+	if autoloadNN:
+		layers = loadNN()
 	
 	if isPSO:
 		for layer in layers:
@@ -56,34 +56,42 @@ func copyLayers() -> Array:
 
 
 # File Save and Load System
-func saveLayers():
-	var file = FileAccess.open("res://Data/bestNN.txt", FileAccess.WRITE)
-	file.store_32(layers.size()) # Store number of layers
-	for i in range(layers.size()):
-		var layer : Layer = layers[i]
-		file.store_32(layer.n_neurons) # Store size of the layer
-		file.store_32(layer.n_inputs) # Store size of the next layer
-		for j in range(layer.n_neurons):
-			file.store_double(layer.biasesArray[j]) # Store bias
-			for k in range(layer.n_inputs):
-				file.store_double(layer.weightsArray[j][k]) # store weight
+func saveNN():
+	var file = FileAccess.open("res://Data/bestNN", FileAccess.WRITE)
+	var save_dict = {
+		networkShape = [],
+		layers = [],
+		isPSO = var_to_str(isPSO),
+	}
+	
+	for i in range(networkShape.size()):
+		save_dict.networkShape.push_back(var_to_str(networkShape[i]))
+	
+	for layer in layers:
+		save_dict.layers.push_back(layer.layer_to_dict())
+	
+	file.store_line(JSON.stringify(save_dict))
+	file.close()
 
 
-func loadLayers() -> Array:
-	var file = FileAccess.open("res://Data/bestNN.txt", FileAccess.READ)
-	var num_layers = file.get_32() # Get number of layers
-	var tmpLayers : Array = [] # Copy array	
-	for i in range(num_layers):
-		var neurons = file.get_32() # Get size of the layer
-		var inputs = file.get_32() # Get size of the next layer
-		var tmpLayer = Layer.new(neurons, inputs)
-		for j in range(neurons):
-			tmpLayer.biasesArray[j] = file.get_double() # Get bias
-			for k in range(inputs):
-				tmpLayer.weightsArray[j][k] =  file.get_double() # get weight
-		tmpLayers.append(tmpLayer)
-	# Return copied Layer
-	return tmpLayers
+func loadNN():
+	var file = FileAccess.open("res://Data/bestNN", FileAccess.READ)
+	var json := JSON.new()
+	json.parse(file.get_line())
+	var save_dict := json.get_data() as Dictionary
+	
+	isPSO = str_to_var(save_dict.isPSO)
+	
+	networkShape = []
+	for i in range(save_dict.networkShape.size()):
+		networkShape.push_back(str_to_var(save_dict.networkShape[i]))
+	
+	layers = []
+	for i in range(networkShape.size() - 1):
+		layers.append(Layer.new(networkShape[i], networkShape[i+1]))
+		layers[-1].dict_to_layer(save_dict.layers[i])
+	
+	file.close()
 
 
 class Layer:
@@ -95,7 +103,43 @@ class Layer:
 	# PSO vars
 	var weightsVelocities : Array[Array]
 	var biasesVelocities : Array
-	var maxVelocity 
+	var maxVelocity
+	
+	func layer_to_dict():
+		var save_dict = {
+			weightsArray = [],
+			biasesArray = [],
+			n_inputs = var_to_str(n_inputs),
+			n_neurons = var_to_str(n_neurons),
+		}
+		
+		for bias in biasesArray:
+			save_dict.biasesArray.push_back(var_to_str(bias))
+		
+		for weights in weightsArray:
+			var tmp_array : Array = []
+			for weight in weights:
+				tmp_array.push_back(var_to_str(weight))
+			save_dict.weightsArray.push_back(tmp_array)
+			
+		return save_dict
+	
+	
+	func dict_to_layer(save_dict : Dictionary):
+		n_neurons = str_to_var(save_dict.n_neurons)
+		n_inputs = str_to_var(save_dict.n_inputs)
+		
+		biasesArray.clear()
+		for bias in save_dict.biasesArray:
+			biasesArray.push_back(str_to_var(bias))
+		
+		weightsArray.clear()
+		for weights in save_dict.weightsArray:
+			var tmp_array : Array = []
+			for weight in weights:
+				tmp_array.push_back(str_to_var(weight))
+			weightsArray.push_back(tmp_array)
+	
 	
 	func _init(n_inputs, n_neurons):
 		self.n_inputs = n_inputs
