@@ -34,10 +34,11 @@ func _physics_process(_delta):
 	input.append_array([relative_pos_2.x, relative_pos_2.y, relative_pos_2.z])
 	var dir_2 = quaternion.inverse()*next_target.basis.z # Ring direction
 	input.append_array([dir_2.x, dir_2.y, dir_2.z])
-	
+
 	var output = nn.brain(input)
 	for i in range(output.size()):
 		output[i] = clamp(output[i], -1, 1)
 	apply_central_force(-basis.z * THRUST * (output[0] + 1)/2)
+	
 	var torque = quaternion * Vector3(output[1] * TURN_PITCH, output[2] * TURN_YAW, output[3] * TURN_ROLL)
 	apply_torque(torque)

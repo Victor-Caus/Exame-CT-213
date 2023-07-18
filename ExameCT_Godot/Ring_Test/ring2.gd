@@ -32,6 +32,7 @@ func _on_body_exited(body):
 		var product = position.direction_to(ini).dot(basis.z) * position.direction_to(final).dot(basis.z)
 		initial_positions.erase(body)
 		
+		# Reward the spaceship by passing through the ring
 		if product < 0 and body is Spaceship and body.target == self:
 			body.reward += 1 - get_parent().time*0.01
 			body.target = body.next_target

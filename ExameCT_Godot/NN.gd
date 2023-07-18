@@ -2,11 +2,14 @@ extends Node
 
 class_name NN
 
-@export var networkShape := [5, 32, 23, 2]
+@export var networkShape := [15, 32, 23]
 var layers : Array
 
 # PSO:
 var isPSO: bool = true
+const FIRST_MUTATE_CHANCE = 1
+const FIRST_MUTATE_AMOUT = 1
+const MAX_VEL = 1 * FIRST_MUTATE_AMOUT
 
 func _ready():
 	layers = []
@@ -15,7 +18,7 @@ func _ready():
 		
 	if isPSO:
 		for layer in layers:
-			layer.PSO_InitializeLayer(1, 1, 2) # Hyperparameters!
+			layer.PSO_InitializeLayer(FIRST_MUTATE_CHANCE, FIRST_MUTATE_AMOUT, MAX_VEL) # Hyperparameters!
 
 	randomize()
 

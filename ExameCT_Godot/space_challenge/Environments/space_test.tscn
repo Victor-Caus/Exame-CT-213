@@ -1,8 +1,8 @@
 [gd_scene load_steps=13 format=3 uid="uid://byaivy1i2dr6e"]
 
-[ext_resource type="Script" path="res://space_challenge/space_test.gd" id="1_rvo5g"]
+[ext_resource type="Script" path="res://space_challenge/Environments/Scripts/space_test.gd" id="1_rvo5g"]
 [ext_resource type="Texture2D" uid="uid://bpxcnqh5s1xr4" path="res://external_assets/SpaceSkyMap.png" id="2_cqctl"]
-[ext_resource type="Script" path="res://space_challenge/Spaceship_test.gd" id="3_h3sos"]
+[ext_resource type="Script" path="res://space_challenge/Environments/Scripts/Spaceship_test.gd" id="3_h3sos"]
 [ext_resource type="PackedScene" uid="uid://mcmygip6pg0x" path="res://Ring_Test/ring2.tscn" id="3_q18ps"]
 [ext_resource type="Script" path="res://NN.gd" id="4_h7kaq"]
 [ext_resource type="ArrayMesh" uid="uid://d2cstfu5u7g54" path="res://external_assets/10475_Rocket_Ship_v1_L3.obj" id="5_3sfx8"]

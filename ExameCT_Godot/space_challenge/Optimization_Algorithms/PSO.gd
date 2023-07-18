@@ -50,6 +50,9 @@ func generate_first_generation():
 	
 
 func natural_selection():
+	# Deveria estar aqui?
+	%Ring1.clear_sequence()
+	%Ring2.clear_sequence()
 	# In this example let's give the reward only in selection:
 	for spaceship in spaceships:
 		spaceship.reward -= spaceship.position.distance_to(spaceship.target.position) * 0.01
@@ -62,7 +65,7 @@ func natural_selection():
 	# sort so we can get the max
 	spaceships.sort_custom(func(a, b): return a.reward > b.reward)
 	
-	print(globalBestReward)
+	
 	# Check if the best of the generation is the global best:
 	if spaceships[0].reward > globalBestReward:
 		print(globalBestReward)
@@ -72,6 +75,7 @@ func natural_selection():
 	#debug
 	print(iteration)
 	print(spaceships[0].reward)
+	print(globalBestReward)
 	
 	for spaceship in spaceships:
 		# Update PSO
@@ -88,5 +92,4 @@ func natural_selection():
 	# Schedule for inertia weight
 	iteration += 1
 	INERTIA_WEIGHT = INERTIA_WEIGHT / (1 + INERTIA_SCHEDULE * iteration)
-	COGNITIVE_P = COGNITIVE_P / (1 + INERTIA_SCHEDULE * iteration)
 
