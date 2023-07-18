@@ -42,15 +42,13 @@ func spawn_ring(origin :Vector3, spawn_distance :float):
 	return new_ring
 
 
-func spaceship_scored(spaceship):
-	spaceship.reward += 1 - 0.01 * (get_parent().time - spaceship.time_last_ring)**2
+func spaceship_scored(spaceship, ring_value):
+	spaceship.reward += ring_value
 	
 	spaceship.target = spaceship.next_target
 	targets_index[spaceship] += 1
 	var ti = targets_index[spaceship]
 	if not rings.size() > ti + 1:
 		spawn_ring(rings[ti].position, RING_DIST)
-		get_parent().SELECTION_TIME += 2
+		get_parent().SELECTION_TIME += 5
 	spaceship.next_target = rings[ti + 1]
-	spaceship.time_last_ring = get_parent().time
-	

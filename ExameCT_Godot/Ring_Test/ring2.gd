@@ -2,17 +2,23 @@ extends Area3D
 
 class_name Ring
 
-signal ring_scored(spaceship)
+signal ring_scored(spaceship, ring_spawn_time)
 
 const RING_SCENE_FILE = "res://Ring_Test/ring2.tscn"
 
 var initial_positions : Dictionary
+var ring_value
 
 static func spawn(root:Node, new_trans:Transform3D):
 	var ring = load(RING_SCENE_FILE).instantiate()
 	root.add_child(ring)
 	ring.transform = new_trans
+	ring.ring_value = 1
 	return ring
+
+
+func _physics_process(delta):
+	ring_value = ring_value * 0.98 ** (delta)
 
 
 func _on_body_entered(body):
@@ -29,4 +35,4 @@ func _on_body_exited(body):
 		
 		# Reward the spaceship by passing through the ring
 		if product < 0 and "reward" in body and "target" in body and body.target == self:
-			ring_scored.emit(body)
+			ring_scored.emit(body, ring_value)

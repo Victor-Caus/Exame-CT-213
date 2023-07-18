@@ -11,7 +11,6 @@ var nn : NN
 var bestParticular : NN
 var reward : float
 var best_reward: float
-var time_last_ring : float
 var target
 var next_target
 
@@ -20,7 +19,6 @@ func _ready():
 	bestParticular = $BestParticular
 	reward = 0
 	best_reward = -INF
-	time_last_ring = 0
 
 # Each physical time step:
 func _physics_process(_delta):
