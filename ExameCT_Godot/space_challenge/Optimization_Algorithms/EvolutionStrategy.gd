@@ -9,6 +9,8 @@ const SELECTED_QUANTITY = 10
 
 var time := 0.0
 
+# Data
+var history = []
 
 func _ready():
 	generate_first_generation()
@@ -39,6 +41,7 @@ func natural_selection():
 		spaceship.reward -= spaceship.position.distance_to(spaceship.target.position) * 0.01
 	spaceships.sort_custom(func(a, b): return a.reward > b.reward)
 	print(spaceships[0].reward)
+	history.append(spaceships[0].reward)
 	
 	# Selection and mutation
 	for i in range(SELECTED_QUANTITY, spaceships.size()):

@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://dqwg7lnsklc6m"]
+[gd_scene load_steps=8 format=3 uid="uid://dqwg7lnsklc6m"]
 
 [ext_resource type="Script" path="res://space_challenge/Optimization_Algorithms/EvolutionStrategy.gd" id="1_8sdsy"]
 [ext_resource type="Texture2D" uid="uid://bpxcnqh5s1xr4" path="res://external_assets/SpaceSkyMap.png" id="2_qu7v3"]
 [ext_resource type="PackedScene" uid="uid://mcmygip6pg0x" path="res://Ring_Test/ring2.tscn" id="3_mpqsm"]
+[ext_resource type="Script" path="res://space_challenge/Environments/ExportConvergency.gd" id="4_f7o7u"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_rmgya"]
 panorama = ExtResource("2_qu7v3")
@@ -34,3 +35,23 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0362573, 0, -4.651)
 [node name="Ring2" parent="." instance=ExtResource("3_mpqsm")]
 unique_name_in_owner = true
 transform = Transform3D(0.949332, 0, 0.314274, 0, 1, 0, -0.314274, 0, 0.949332, -0.966661, 0.47952, -11.3236)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="SaveBestNN" type="Button" parent="CanvasLayer"]
+offset_right = 8.0
+offset_bottom = 8.0
+text = "Save Best NN
+"
+
+[node name="ExportConvergency" type="Button" parent="CanvasLayer"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -215.0
+offset_bottom = 31.0
+grow_horizontal = 0
+text = "Export Convergency Graph"
+script = ExtResource("4_f7o7u")
+
+[connection signal="pressed" from="CanvasLayer/ExportConvergency" to="CanvasLayer/ExportConvergency" method="_on_pressed"]
