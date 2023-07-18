@@ -18,8 +18,8 @@ func _ready():
 	bestParticular = $BestParticular
 	reward = 0
 	best_reward = -INF
-	target = %Ring1
-	next_target = %Ring2
+	target = self
+	next_target = self
 
 
 func _physics_process(_delta):

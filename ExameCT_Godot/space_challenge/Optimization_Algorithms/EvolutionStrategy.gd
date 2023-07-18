@@ -8,38 +8,51 @@ const QUANTITY = 50
 const SELECTED_QUANTITY = 10
 
 var time := 0.0
+var ring_manager : Node3D
 
 # Data
 var history = []
 
 func _ready():
+	ring_manager = $RingManager
 	generate_first_generation()
 
 
 func _physics_process(delta):
 	time += delta
-	if time > SELECTION_TIME:
+	
+	# Natural selection occurs every SELECTION_TIME seconds
+	while time > SELECTION_TIME:
 		natural_selection()
 		time -= SELECTION_TIME
 
 
 func generate_first_generation():
+	# Prepare the rings
+	ring_manager.restart()
+	
+	# Spawn all spaceships
 	var spaceship_resource = load(spaceship_scene) as PackedScene
 	for i in range(QUANTITY):
 		var spaceship = spaceship_resource.instantiate()
-		spaceship.target = %Ring1
-		spaceship.next_target = %Ring2
+		reset_spaceship(spaceship)
 		add_child(spaceship)
 		spaceships.push_back(spaceship)
 		spaceship.nn.mutateNetwork(1, 1)
 
 
 func natural_selection():
-	%Ring1.clear_sequence()
-	%Ring2.clear_sequence()
+	# Delete old rings
+	ring_manager.restart()
+	
+	# Punish the ships that got to far from their target
 	for spaceship in spaceships:
 		spaceship.reward -= spaceship.position.distance_to(spaceship.target.position) * 0.01
+	
+	# Sort the fittest spaceships
 	spaceships.sort_custom(func(a, b): return a.reward > b.reward)
+	
+	#debug
 	print(spaceships[0].reward)
 	history.append(spaceships[0].reward)
 	
@@ -47,13 +60,18 @@ func natural_selection():
 	for i in range(SELECTED_QUANTITY, spaceships.size()):
 		spaceships[i].nn.layers = spaceships[i%SELECTED_QUANTITY].nn.copyLayers()
 		spaceships[i].nn.mutateNetwork(0.1, 0.5)
-		
+	
+	# Reset positions, velocities, targets and rewards of spaceships
 	for spaceship in spaceships:
-		# Reset positions, velocities, targets and rewards of spaceships
-		spaceship.position = Vector3.ZERO
-		spaceship.rotation = Vector3.ZERO
-		spaceship.linear_velocity = Vector3.ZERO
-		spaceship.angular_velocity = Vector3.ZERO
-		spaceship.target = %Ring1
-		spaceship.next_target = %Ring2
-		spaceship.reward = 0
+		reset_spaceship(spaceship)
+
+
+func reset_spaceship(spaceship):
+	spaceship.position = Vector3.ZERO
+	spaceship.rotation = Vector3.ZERO
+	spaceship.linear_velocity = Vector3.ZERO
+	spaceship.angular_velocity = Vector3.ZERO
+	ring_manager.targets_index[spaceship] = 0
+	spaceship.target = ring_manager.rings[0]
+	spaceship.next_target = ring_manager.rings[1]
+	spaceship.reward = 0

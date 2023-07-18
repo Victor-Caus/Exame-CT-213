@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" path="res://space_challenge/Environments/Scripts/space_test.gd" id="1_rvo5g"]
 [ext_resource type="Texture2D" uid="uid://bpxcnqh5s1xr4" path="res://external_assets/SpaceSkyMap.png" id="2_cqctl"]
+[ext_resource type="PackedScene" uid="uid://ctluyj2ir5gjj" path="res://Ring_Test/ring_manager.tscn" id="3_3u62w"]
 [ext_resource type="Script" path="res://space_challenge/Environments/Scripts/Spaceship_test.gd" id="3_h3sos"]
-[ext_resource type="PackedScene" uid="uid://mcmygip6pg0x" path="res://Ring_Test/ring2.tscn" id="3_q18ps"]
 [ext_resource type="Script" path="res://NN.gd" id="4_h7kaq"]
 [ext_resource type="ArrayMesh" uid="uid://d2cstfu5u7g54" path="res://external_assets/10475_Rocket_Ship_v1_L3.obj" id="5_3sfx8"]
 
@@ -40,13 +40,7 @@ transform = Transform3D(0.875042, -0.418578, 0.24309, 0, 0.502205, 0.864748, -0.
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_3y7q2")
 
-[node name="Ring1" parent="." instance=ExtResource("3_q18ps")]
-unique_name_in_owner = true
-transform = Transform3D(0.963956, 0.0336595, -0.263923, 0, 0.991965, 0.126511, 0.266061, -0.121951, 0.956211, 0.558941, 0, -2.03877)
-
-[node name="Ring2" parent="." instance=ExtResource("3_q18ps")]
-unique_name_in_owner = true
-transform = Transform3D(0.949332, 0, 0.314274, 0, 1, 0, -0.314274, 0, 0.949332, -0.966661, 0.47952, -7.25567)
+[node name="RingManager" parent="." instance=ExtResource("3_3u62w")]
 
 [node name="Spaceship" type="RigidBody3D" parent="."]
 collision_mask = 2

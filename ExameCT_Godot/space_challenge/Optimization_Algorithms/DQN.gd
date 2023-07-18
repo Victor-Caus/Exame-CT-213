@@ -40,8 +40,8 @@ func generate_first_generation():
 
 func natural_selection():
 	# Free the other rings in sequence
-	%Ring1.clear_sequence()
-	%Ring2.clear_sequence()
+	%Ring1.free_rings()
+	%Ring2.free_rings()
 	
 	# Attribute the reward of the epoche
 	for spaceship in spaceships:
