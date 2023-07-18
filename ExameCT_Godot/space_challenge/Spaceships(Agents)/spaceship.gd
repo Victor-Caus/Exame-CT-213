@@ -1,6 +1,6 @@
 extends RigidBody3D
 
-class_name Spaceship_DQN
+class_name Spaceship
 
 const THRUST = 50.0
 const TURN_PITCH = 10.0
@@ -23,8 +23,12 @@ func _ready():
 # Each physical time step:
 func _physics_process(_delta):
 	# Analyze the environment state
-	var input = [linear_velocity.x, linear_velocity.y, linear_velocity.z]
-	input.append_array([angular_velocity.x, angular_velocity.y, angular_velocity.z])
+	var input : Array
+	
+	var relative_lin_vel = quaternion.inverse()*linear_velocity
+	input.append_array([relative_lin_vel.x, relative_lin_vel.y, relative_lin_vel.z])
+	var relative_ang_vel = quaternion.inverse()*angular_velocity
+	input.append_array([relative_ang_vel.x, relative_ang_vel.y, relative_ang_vel.z])
 	
 	var relative_pos_1 = quaternion.inverse()*(target.position - position)
 	input.append_array([relative_pos_1.x, relative_pos_1.y, relative_pos_1.z])

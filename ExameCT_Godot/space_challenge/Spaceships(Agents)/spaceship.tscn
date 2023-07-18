@@ -21,11 +21,11 @@ script = ExtResource("1_ca4ck")
 
 [node name="NN" type="Node" parent="."]
 script = ExtResource("2_knpsi")
-networkShape = [18, 32, 32, 4]
+networkShape = Array[int]([18, 32, 32, 4])
 
 [node name="BestParticular" type="Node" parent="."]
 script = ExtResource("2_knpsi")
-networkShape = [18, 32, 32, 4]
+networkShape = Array[int]([18, 32, 32, 4])
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.003, 0, 0, 0, -0.003, 4.52987e-10, 0, -4.52987e-10, -0.003, 0, 0, 0.6)

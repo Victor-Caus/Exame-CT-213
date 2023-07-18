@@ -1,6 +1,6 @@
 extends RigidBody3D
 
-class_name Spaceship
+class_name Spaceship_DQN
 
 const THRUST = 50.0
 const TURN_PITCH = 10.0

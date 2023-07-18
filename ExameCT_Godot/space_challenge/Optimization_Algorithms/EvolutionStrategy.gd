@@ -3,7 +3,7 @@ extends Node3D
 @export_file("*.tscn") var spaceship_scene
 @export var spaceships : Array[Node]
 
-const SELECTION_TIME = 5
+var SELECTION_TIME = 3
 const QUANTITY = 50
 const SELECTED_QUANTITY = 10
 
