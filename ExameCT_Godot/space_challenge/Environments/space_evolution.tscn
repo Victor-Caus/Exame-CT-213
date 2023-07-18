@@ -3,8 +3,6 @@
 [ext_resource type="Script" path="res://space_challenge/Optimization_Algorithms/EvolutionStrategy.gd" id="1_8sdsy"]
 [ext_resource type="Texture2D" uid="uid://bpxcnqh5s1xr4" path="res://external_assets/SpaceSkyMap.png" id="2_qu7v3"]
 [ext_resource type="PackedScene" uid="uid://ctluyj2ir5gjj" path="res://Ring_Test/ring_manager.tscn" id="3_8g4nr"]
-[ext_resource type="Script" path="res://space_challenge/Environments/SaveBestNN.gd" id="4_a8ycn"]
-[ext_resource type="Script" path="res://space_challenge/Environments/ExportConvergency.gd" id="4_f7o7u"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_rmgya"]
 panorama = ExtResource("2_qu7v3")
@@ -15,6 +13,31 @@ sky_material = SubResource("PanoramaSkyMaterial_rmgya")
 [sub_resource type="Environment" id="Environment_3y7q2"]
 background_mode = 2
 sky = SubResource("Sky_tqprb")
+
+[sub_resource type="GDScript" id="GDScript_1o5w3"]
+script/source = "extends Button
+
+
+func _on_pressed():
+	get_parent().get_parent().spaceships[0].nn.saveLayers()
+	
+	
+	
+"
+
+[sub_resource type="GDScript" id="GDScript_4s13q"]
+script/source = "extends Button
+var history = []
+
+func _on_pressed():
+	# Take the space's history:
+	history = get_parent().get_parent().history
+	var file = FileAccess.open(\"res://Data/reward_convergency.txt\", FileAccess.WRITE)
+	for reward in history:
+		file.store_line(str(reward))
+
+	# The file will be closed automatically when gets out of the scope
+"
 
 [node name="space" type="Node3D"]
 script = ExtResource("1_8sdsy")
@@ -38,7 +61,7 @@ offset_right = 8.0
 offset_bottom = 8.0
 text = "Save Best NN
 "
-script = ExtResource("4_a8ycn")
+script = SubResource("GDScript_1o5w3")
 
 [node name="ExportConvergency" type="Button" parent="CanvasLayer"]
 anchors_preset = 1
@@ -48,7 +71,7 @@ offset_left = -215.0
 offset_bottom = 31.0
 grow_horizontal = 0
 text = "Export Convergency Graph"
-script = ExtResource("4_f7o7u")
+script = SubResource("GDScript_4s13q")
 
 [connection signal="pressed" from="CanvasLayer/SaveBestNN" to="CanvasLayer/SaveBestNN" method="_on_pressed"]
 [connection signal="pressed" from="CanvasLayer/ExportConvergency" to="CanvasLayer/ExportConvergency" method="_on_pressed"]
