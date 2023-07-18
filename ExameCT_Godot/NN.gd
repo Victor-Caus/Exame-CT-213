@@ -5,6 +5,9 @@ class_name NN
 @export var networkShape := [15, 32, 23]
 var layers : Array
 
+# Save and Load System:
+var loadNN : bool = false
+
 # PSO:
 var isPSO: bool = true
 const FIRST_MUTATE_CHANCE = 1
@@ -15,7 +18,10 @@ func _ready():
 	layers = []
 	for i in range(networkShape.size() - 1):
 		layers.append(Layer.new(networkShape[i], networkShape[i+1]))
-		
+	
+	if loadNN:
+		layers = loadLayers()
+	
 	if isPSO:
 		for layer in layers:
 			layer.PSO_InitializeLayer(FIRST_MUTATE_CHANCE, FIRST_MUTATE_AMOUT, MAX_VEL) # Hyperparameters!
@@ -45,6 +51,35 @@ func copyLayers() -> Array:
 
 	return tmpLayers
 
+# File Save and Load System
+func saveLayers():
+	var file = FileAccess.open("res://Data/bestNN.txt", FileAccess.WRITE)
+	file.store_32(layers.size()) # Store number of layers
+	for i in range(layers.size()):
+		var layer : Layer = layers[i]
+		file.store_32(layer.n_neurons) # Store size of the layer
+		file.store_32(layer.n_inputs) # Store size of the next layer
+		for j in range(layer.n_neurons):
+			file.store_double(layer.biasesArray[j]) # Store bias
+			for k in range(layer.n_inputs):
+				file.store_double(layer.weightsArray[j][k]) # store weight
+	
+func loadLayers() -> Array:
+	var file = FileAccess.open("res://Data/bestNN.txt", FileAccess.READ)
+	var num_layers = file.get_32() # Get number of layers
+	var tmpLayers : Array = [] # Copy array	
+	for i in range(num_layers):
+		var neurons = file.get_32() # Get size of the layer
+		var inputs = file.get_32() # Get size of the next layer
+		var tmpLayer = Layer.new(neurons, inputs)
+		for j in range(neurons):
+			tmpLayer.biasesArray[j] = file.get_double() # Get bias
+			for k in range(inputs):
+				tmpLayer.weightsArray[j][k] =  file.get_double() # get weight
+		tmpLayers.append(tmpLayer)
+	# Return copied Layer
+	return tmpLayers
+	
 class Layer:
 	var weightsArray : Array[Array]
 	var biasesArray : Array
