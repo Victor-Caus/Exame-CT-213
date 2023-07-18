@@ -102,3 +102,4 @@ func reset_spaceship(spaceship):
 	ring_manager.targets_index[spaceship] = 0
 	spaceship.target = ring_manager.rings[0]
 	spaceship.next_target = ring_manager.rings[1]
+	spaceship.reward = 0
