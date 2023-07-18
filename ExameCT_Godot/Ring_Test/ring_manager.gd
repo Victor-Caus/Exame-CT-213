@@ -49,4 +49,5 @@ func spaceship_scored(spaceship):
 	var ti = targets_index[spaceship]
 	if not rings.size() > ti + 1:
 		spawn_ring(rings[ti].position, RING_DIST)
+		get_parent().SELECTION_TIME += 2
 	spaceship.next_target = rings[ti + 1]
