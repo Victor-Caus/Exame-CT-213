@@ -54,8 +54,4 @@ func spaceship_scored(spaceship, ring_value):
 		spawn_ring(rings[ti].position, RING_DIST)
 		# Increase the time that the generation executes the code
 		get_parent().SELECTION_TIME += 5
-		# Change the position of the camera
-				
-		increase = rings[ti].position - rings[ti-1].position
-		pivot.translate(increase)
 	spaceship.next_target = rings[ti + 1]
