@@ -80,3 +80,7 @@ func reset_spaceship(spaceship):
 	spaceship.target = ring_manager.rings[0]
 	spaceship.next_target = ring_manager.rings[1]
 	spaceship.reward = 0
+
+
+func _on_button_pressed():
+	pass # Replace with function body.
