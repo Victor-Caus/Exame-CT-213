@@ -1,62 +1,82 @@
 extends Node3D
 
-# Permits to drag and drop the spaceship "prefab"
 @export_file("*.tscn") var spaceship_scene
 @export var spaceships : Array[Node]
 
-# Episode proprieties
-const SELECTION_TIME = 5
+var SELECTION_TIME = 5
 const QUANTITY = 1
-const SELECTED_QUANTITY = 1
 
-# DQN Agent attributes
-
-
+var epoche : int = 0
 var time := 0.0
+var ring_manager : Node3D
 
-# Executes when the scene begins:
+# Data
+var history = []
+
 func _ready():
+	ring_manager = $RingManager
 	generate_first_generation()
+	epoche = 0
 
-# Executes in each physics time step
+
 func _physics_process(delta):
 	time += delta
-	if time > SELECTION_TIME:
+	
+	# Natural selection occurs every SELECTION_TIME seconds
+	while time > SELECTION_TIME:
 		natural_selection()
 		time -= SELECTION_TIME
+		SELECTION_TIME = 5
 
-# First generation (In this case, there will be only one)
 func generate_first_generation():
+	# Prepare the rings
+	ring_manager.restart()
+	
+	# Spawn all spaceships (in the case only one)
 	var spaceship_resource = load(spaceship_scene) as PackedScene
 	for i in range(QUANTITY):
 		var spaceship = spaceship_resource.instantiate()
-		spaceship.target = %Ring1
-		spaceship.next_target = %Ring2
+		reset_spaceship(spaceship)
 		add_child(spaceship)
 		spaceships.push_back(spaceship)
-		# Defines the initial guess about the NN:
-		spaceship.nn.mutateNetwork(1, 1)
+		spaceship.nn.mutateNetwork(1)
 
 
 func natural_selection():
-	# Free the other rings in sequence
-	%Ring1.free_rings()
-	%Ring2.free_rings()
+	# Delete old rings
+	var scored_rings = ring_manager.rings.size()
+	ring_manager.restart()
 	
-	# Attribute the reward of the epoche
+	# Punish the ships that got to far from their target (MUDAR DE LUGAR)
 	for spaceship in spaceships:
-		spaceship.reward -= spaceship.position.distance_to(spaceship.target.position) * 0.01
-		
+		spaceship.reward -= spaceship.position.distance_to(ring_manager.rings.back().position) * 0.00001
+	
+	# Sort the fittest spaceships
+	spaceships.sort_custom(func(a, b): return a.reward > b.reward)
+	
+	# Debug and save in story array for convergency graphs
+	print("Epoche: %d  Scored rings: %d  Reward: %f" % [epoche, scored_rings - 2, spaceships[0].reward])
+	history.append(spaceships[0].reward)
 	
 	# Selection and mutation
-
-	# Reset the environment
+	for i in range(1, spaceships.size()):
+		spaceships[i].nn.layers = spaceships[0].nn.copyLayers()
+		spaceships[i].nn.mutateNetwork(0.1)
+	
+	# Reset positions, velocities, targets and rewards of spaceships
 	for spaceship in spaceships:
-		# Reset positions, velocities, targets and rewards of spaceships
-		spaceship.position = Vector3.ZERO
-		spaceship.rotation = Vector3.ZERO
-		spaceship.linear_velocity = Vector3.ZERO
-		spaceship.angular_velocity = Vector3.ZERO
-		spaceship.target = %Ring1
-		spaceship.next_target = %Ring2
-		spaceship.reward = 0  # Cumulative reward (return)
+		reset_spaceship(spaceship)
+	
+	epoche += 1
+
+
+func reset_spaceship(spaceship : Spaceship):
+	spaceship.position = Vector3.ZERO
+	spaceship.rotation = Vector3.ZERO
+	spaceship.linear_velocity = Vector3.ZERO
+	spaceship.angular_velocity = Vector3.ZERO
+	ring_manager.targets_index[spaceship] = 0
+	spaceship.target = ring_manager.rings[0]
+	spaceship.next_target = ring_manager.rings[1]
+	spaceship.reward = 0
+
