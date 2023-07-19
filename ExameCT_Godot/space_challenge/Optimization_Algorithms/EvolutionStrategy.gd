@@ -84,3 +84,7 @@ func reset_spaceship(spaceship):
 
 func _on_button_pressed():
 	pass # Replace with function body.
+
+
+func _on_spaceship_view_pressed():
+	pass # Replace with function body.

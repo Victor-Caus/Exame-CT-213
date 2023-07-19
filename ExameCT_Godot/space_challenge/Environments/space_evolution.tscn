@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dqwg7lnsklc6m"]
+[gd_scene load_steps=13 format=3 uid="uid://dqwg7lnsklc6m"]
 
 [ext_resource type="Script" path="res://space_challenge/Optimization_Algorithms/EvolutionStrategy.gd" id="1_8sdsy"]
 [ext_resource type="Texture2D" uid="uid://bpxcnqh5s1xr4" path="res://external_assets/SpaceSkyMap.png" id="2_qu7v3"]
@@ -6,8 +6,9 @@
 [ext_resource type="Script" path="res://space_challenge/Environments/Scripts/SaveBestNN.gd" id="4_a8ycn"]
 [ext_resource type="Script" path="res://space_challenge/Environments/Scripts/ExportConvergency.gd" id="4_f7o7u"]
 [ext_resource type="Script" path="res://space_challenge/Environments/LoadBestNN.gd" id="5_ynqid"]
-[ext_resource type="Script" path="res://space_challenge/Environments/Button.gd" id="7_wjg2g"]
+[ext_resource type="Script" path="res://space_challenge/Environments/global view.gd" id="7_q3u7y"]
 [ext_resource type="Script" path="res://space_challenge/Environments/Pivot.gd" id="8_m2se6"]
+[ext_resource type="Script" path="res://space_challenge/Environments/Spaceship View.gd" id="8_qieqw"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_rmgya"]
 panorama = ExtResource("2_qu7v3")
@@ -57,12 +58,22 @@ grow_horizontal = 0
 text = "Export Convergency Graph"
 script = ExtResource("4_f7o7u")
 
-[node name="Button" type="Button" parent="CanvasLayer"]
-offset_top = 85.0
-offset_right = 118.0
-offset_bottom = 121.0
-text = "Change View"
-script = ExtResource("7_wjg2g")
+[node name="Global View" type="Button" parent="CanvasLayer"]
+offset_left = 294.0
+offset_right = 412.0
+offset_bottom = 31.0
+text = "Global View
+"
+script = ExtResource("7_q3u7y")
+
+[node name="Spaceship View" type="Button" parent="CanvasLayer"]
+offset_left = 295.0
+offset_top = 37.0
+offset_right = 425.0
+offset_bottom = 72.0
+text = "Spaceship View
+"
+script = ExtResource("8_qieqw")
 
 [node name="Pivot" type="Marker3D" parent="."]
 script = ExtResource("8_m2se6")
@@ -73,4 +84,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 35)
 [connection signal="pressed" from="CanvasLayer/SaveBestNN" to="CanvasLayer/SaveBestNN" method="_on_pressed"]
 [connection signal="pressed" from="CanvasLayer/LoadBestNN" to="CanvasLayer/LoadBestNN" method="_on_pressed"]
 [connection signal="pressed" from="CanvasLayer/ExportConvergency" to="CanvasLayer/ExportConvergency" method="_on_pressed"]
-[connection signal="pressed" from="CanvasLayer/Button" to="CanvasLayer/Button" method="_on_pressed"]
+[connection signal="pressed" from="CanvasLayer/Global View" to="CanvasLayer/Global View" method="_on_pressed"]
+[connection signal="pressed" from="CanvasLayer/Spaceship View" to="CanvasLayer/Spaceship View" method="_on_pressed"]
