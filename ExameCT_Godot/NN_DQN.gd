@@ -129,7 +129,18 @@ func mutateNetwork(deviation : float):
 	for layer in layers:
 		layer.mutateLayer(deviation)
 
+# NN Gradient Descend:
+func loss(states, targets):
+	for i in range(states.size()):
+		
+	var cost = mean(-(y * log(y_hat) + (1.0 - y) * log(1.0 - y_hat)))
+	return cost
+
 
 # Utils: activation functions:
 func relu(x):
 	return max(0,x)
+	
+func sigmoid(x):
+	return 1.0 / (1.0 + exp(-x))
+
