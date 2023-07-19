@@ -1,7 +1,6 @@
 extends Node3D
 
-const RING_DIST = 6.0
-
+var ring_dist : float = 6.0
 var rings : Array[Ring]
 var targets_index : Dictionary
 
@@ -10,8 +9,8 @@ func restart():
 	while not rings.is_empty():
 		rings.pop_back().queue_free()
 	# Generate 2 rings
-	spawn_ring(Vector3.ZERO, RING_DIST)
-	spawn_ring(rings[0].position, RING_DIST)
+	spawn_ring(Vector3.ZERO, ring_dist)
+	spawn_ring(rings[0].position, ring_dist)
 
 
 func spawn_ring(origin :Vector3, spawn_distance :float):
@@ -51,7 +50,7 @@ func spaceship_scored(spaceship, ring_value):
 
 	if not rings.size() > ti + 1:
 		# Spawn new ring
-		spawn_ring(rings[ti].position, RING_DIST)
+		spawn_ring(rings[ti].position, ring_dist)
 		# Increase the time that the generation executes the code
 		get_parent().selection_time += get_parent().time_per_ring
 		# Increase the trasparency of old rings

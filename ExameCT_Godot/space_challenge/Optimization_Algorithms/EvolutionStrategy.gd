@@ -20,6 +20,7 @@ var history = []
 
 func _ready():
 	ring_manager = $RingManager
+	ring_manager.ring_dist = %RingDistance.value
 	generate_first_generation()
 	iteration = 0
 
