@@ -10,7 +10,8 @@ const TURN_ROLL = 5.0
 const SENSE = [-1.0 , 0.0 , 1.0] # Array that gives the "direction" of force
 
 # NN variables:
-var nn : NN
+var nn : NN # action-value
+var fixed_nn : NN # target action-value
 const OUTPUT_ENTRIES = 4
 const ACTION_OPTIONS = 3
 
@@ -22,20 +23,26 @@ var next_target
 
 
 # DQN Agent attributes
-var epsilon = 0.01
+var epsilon = 1
+@export var epsilon_min = 0.05
+@export var gamma = 0.98 # Gamma that makes past states values less
+@export var learning_rate = 0.5 
 var action_variability = 2
 @onready var first_state = true
+const BUFFER_SIZE = 4098
 const BATCH_SIZE = 32 # batch size of experience replay 
-var replay_buffer = [Experience]
+@onready var replay_buffer = []
 var return_history = []
 var previous_state
 var action
-var gamma = 0.98 # Gamma that makes past states values less
+
 
 
 
 func _ready():
 	nn = $NN_DQN
+	fixed_nn = $FIXED_DQN
+	randomize()
 
 
 # Each physical time step:
@@ -49,9 +56,11 @@ func _physics_process(_delta):
 	impulse(action) # Contribute to the next state, applying force
 	
 	if not first_state:
-		# Append the experience (S, A, R, S') to the experience replay buffer:
-		replay_buffer.append(Experience.new(previous_state, action, reward, new_state))
-	
+		# Append the experience (S, A, R, S', done), but let's see if it's done:
+		if get_parent().time + _delta > get_parent().SELECTION_TIME: 
+			replay_buffer.append(Experience.new(previous_state, action, reward, new_state,true))
+		else:
+			replay_buffer.append(Experience.new(previous_state, action, reward, new_state,false))
 	
 	# Accumulate reward:
 	cumulative_reward = gamma * cumulative_reward + reward
@@ -110,24 +119,61 @@ class Experience:
 	var action
 	var reward
 	var new_state
-	func _init(previous_state, action, reward, new_state):
+	var done : bool
+	func _init(previous_state, action, reward, new_state,done):
 		self.previous_state = previous_state
 		self.action = action
 		self.reward = reward
 		self.new_state = new_state
-		
+		self.done = done
+
+func add_to_buffer(item):
+	replay_buffer.append(item)
+	if replay_buffer.size() > BUFFER_SIZE:
+		replay_buffer.pop_front()
+
+func pick_random(batch_size):
+	var indices = []
+	for i in range(BATCH_SIZE):
+		indices.append(randi() % replay_buffer.size())
+	var minibatch = []
+	for i in indices:
+		minibatch.append(replay_buffer[i])
+	return minibatch
+
 # Learns from memorized experience
-func replay(batch_size : int):
-	var minibatch := [Experience]
-	var states := []
-	var targets := []
-	# Take random samples to compose the minibatch:
-	for i in range(batch_size):
-		var index = randi() % replay_buffer.size()
-		minibatch.append(replay_buffer[index])
+func replay(batch_size: int):
+	"""
+	Learns from memorized experience.
+
+	:param batch_size: size of the minibatch taken from the replay buffer.
+	:type batch_size: int.
+	:return: loss computed during the neural network training.
+	:rtype: float.
+	"""
+	var minibatch = pick_random(BATCH_SIZE)
+	var states = []
+	var targets = [[]]
 	for experience in minibatch:
-		target = nn.brain(experience.previous_state)
-		
+		var previous_state = experience[0]
+		var reward = experience[2]
+		var new_state = experience[3]
+		var target = []
+		for i in range(OUTPUT_ENTRIES):
+			var entry_action = experience[1][i]
+			if experience.done:
+				target[i]= reward
+			else:
+				# Fixed Q-Target:
+				target[i] = reward + gamma * max(to_matrix(fixed_nn.brain(new_state))[i])
+			targets[i].append(target[i])
+		# Filtering out states for training
+		states.append(previous_state)
+	var loss = nn.backpropagation(states, targets)
+	#var history = self.model.fit(np.array(states), np.array(targets), epochs=1, verbose=0)
+	# Keeping track of loss
+	#var loss = history.history['loss'][0]
+	pass
 
 # Reward given for each step:
 func instantaneous_reward():

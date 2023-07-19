@@ -21,6 +21,11 @@ script = ExtResource("1_w7n0x")
 
 [node name="NN_DQN" type="Node" parent="."]
 script = ExtResource("2_k2lu3")
+networkShape = null
+
+[node name="FIXED_DQN" type="Node" parent="."]
+script = ExtResource("2_k2lu3")
+networkShape = null
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.003, 0, 0, 0, -0.003, 4.52987e-10, 0, -4.52987e-10, -0.003, 0, 0, 0.6)
