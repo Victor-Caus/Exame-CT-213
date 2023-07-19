@@ -5,7 +5,7 @@ extends Node3D
 
 # Constants
 @export var Q_TARGET_TIME = 0.3
-var SELECTION_TIME = 5
+var selection_time = 5
 const QUANTITY = 1
 const GLIE_RATE = 0.01
 
@@ -27,11 +27,11 @@ func _physics_process(delta):
 	time += delta
 	q_time += delta
 	
-	# Natural selection occurs every SELECTION_TIME seconds
-	while time > SELECTION_TIME:
+	# Natural selection occurs every selection_time seconds
+	while time > selection_time:
 		natural_selection()
-		time -= SELECTION_TIME
-		SELECTION_TIME = 5
+		time -= selection_time
+		selection_time = 5
 		
 	# Copy nn to Fixed Q-Target:
 	while q_time >= Q_TARGET_TIME:
@@ -90,7 +90,7 @@ func reset_spaceship(spaceship : Spaceship):
 	spaceship.next_target = ring_manager.rings[1]
 	spaceship.reward = 0
 	spaceship.cumulative_reward = 0
-	spaceship.first_state = 0
+	spaceship.first_state = true
 	
 # Epsilon Decay:
 func glie_schedule(rate):

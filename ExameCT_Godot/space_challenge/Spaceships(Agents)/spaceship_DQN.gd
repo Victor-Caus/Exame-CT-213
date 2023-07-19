@@ -57,10 +57,10 @@ func _physics_process(_delta):
 	
 	if not first_state:
 		# Append the experience (S, A, R, S', done), but let's see if it's done:
-		if get_parent().time + _delta > get_parent().SELECTION_TIME: 
-			replay_buffer.append(Experience.new(previous_state, action, reward, new_state,true))
+		if get_parent().time + _delta > get_parent().selection_time: 
+			add_to_buffer(Experience.new(previous_state, action, reward, new_state,true))
 		else:
-			replay_buffer.append(Experience.new(previous_state, action, reward, new_state,false))
+			add_to_buffer(Experience.new(previous_state, action, reward, new_state,false))
 	
 	# Accumulate reward:
 	cumulative_reward = gamma * cumulative_reward + reward
@@ -154,6 +154,7 @@ func replay(batch_size: int):
 	var minibatch = pick_random(BATCH_SIZE)
 	var states = []
 	var targets = [[]]
+	var actions = [[]]
 	for experience in minibatch:
 		var previous_state = experience[0]
 		var reward = experience[2]
@@ -169,7 +170,8 @@ func replay(batch_size: int):
 			targets[i].append(target[i])
 		# Filtering out states for training
 		states.append(previous_state)
-	var loss = nn.backpropagation(states, targets)
+		actions.append(experience[1])
+	var loss = nn.backpropagation(states, targets, actions)
 	#var history = self.model.fit(np.array(states), np.array(targets), epochs=1, verbose=0)
 	# Keeping track of loss
 	#var loss = history.history['loss'][0]
@@ -180,7 +182,7 @@ func instantaneous_reward():
 	# Punish the ships that got to far from their target 
 	reward -= 0.0001 * position.distance_to(get_parent().ring_manager.rings[-2].position)
 	# Punish if they get far from
-	reward -= 0.00001 * position.distance_to(get_parent().ring_manager.rings[-1].position)
+	#reward -= 0.00001 * position.distance_to(get_parent().ring_manager.rings[-1].position)
 	# There will be one frame in which the ring will give a big reward.
 
 
@@ -200,6 +202,6 @@ func to_matrix(array):
 	# Transform output of the NN into a matrix:
 	for i in range(OUTPUT_ENTRIES):
 		for j in range(ACTION_OPTIONS):
-			action[i][j] = array[matrificator]
+			matrix[i][j] = array[matrificator]
 			matrificator += 1
 	return matrix

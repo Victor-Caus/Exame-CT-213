@@ -130,17 +130,45 @@ func mutateNetwork(deviation : float):
 		layer.mutateLayer(deviation)
 
 # NN Gradient Descend:
-func loss(states, targets):
-	for i in range(states.size()):
-		
-	var cost = mean(-(y * log(y_hat) + (1.0 - y) * log(1.0 - y_hat)))
+func loss(states, targets, actions):
+	var entries_quant = targets.size() 
+	var minib_size = states.size()
+	var sum = 0
+	for j in range(minib_size):
+		for i in range(entries_quant):
+			var Q = to_matrix(brain(states[j]))
+			sum += (targets[i][j] - Q[i][actions[j][i]])**2
+	var cost = sum/(entries_quant * minib_size)
 	return cost
+	
+func compute_gradient():
+	var gradient = copyLayers()
+	pass
 
-
+func back_propagation(states, targets, actions):
+	var gradient #= compute_gradient()
+	for k in layers.size():
+		for i in range(layers[k].weightsArray.size()):
+			layers[k].biasesArray[i] -= get_parent().learning_rate * gradient[k].biasesArray[i]
+			for j in range(layers[k].weightsArray[0].size()):
+				layers[k].weightsArray[i][j] -= get_parent().learning_rate * gradient[k].weightsArray[i][k]
+				
 # Utils: activation functions:
 func relu(x):
 	return max(0,x)
 	
 func sigmoid(x):
 	return 1.0 / (1.0 + exp(-x))
+	
+func to_matrix(array):
+	const OUTPUT_ENTRIES = 4 
+	const ACTION_OPTIONS = 3
+	var matrix = [[]]
+	var matrificator : int = 0
+	# Transform output of the NN into a matrix:
+	for i in range(OUTPUT_ENTRIES):
+		for j in range(ACTION_OPTIONS):
+			matrix[i][j] = array[matrificator]
+			matrificator += 1
+	return matrix
 
