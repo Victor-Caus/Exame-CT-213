@@ -48,11 +48,11 @@ script = ExtResource("3_h3sos")
 
 [node name="NN" type="Node" parent="Spaceship"]
 script = ExtResource("4_h7kaq")
-networkShape = [12, 32, 32, 4]
+networkShape = Array[int]([12, 32, 32, 4])
 
 [node name="BestParticular" type="Node" parent="Spaceship"]
 script = ExtResource("4_h7kaq")
-networkShape = [12, 32, 32, 4]
+networkShape = Array[int]([12, 32, 32, 4])
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Spaceship"]
 transform = Transform3D(0.003, 0, 0, 0, -0.003, 4.52987e-10, 0, -4.52987e-10, -0.003, 0, 0, 0.6)
