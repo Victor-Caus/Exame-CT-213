@@ -7,24 +7,26 @@ const THRUST = 50.0
 const TURN_PITCH = 10.0
 const TURN_YAW = 2.0
 const TURN_ROLL = 5.0
+const SENSE = [-1.0 , 0.0 , 1.0] # Array that gives the "direction" of force
 
-# NN Components:
+# NN variables:
 var nn : NN
-var bestParticular : NN
+const OUTPUT_ENTRIES = 4
+const ACTION_OPTIONS = 3
 
 # Targets and Rewards:
-var reward : float
-var best_reward: float
+@onready var cumulative_reward := 0.0
+@onready var reward := 0.0
 var target
 var next_target
-@onready var cumulative_reward := 0.0
+
 
 # DQN Agent attributes
 var epsilon = 0.01
 var action_variability = 2
 @onready var first_state = true
 const BATCH_SIZE = 32 # batch size of experience replay 
-var replay_buffer = []
+var replay_buffer = [Experience]
 var return_history = []
 var previous_state
 var action
@@ -33,10 +35,8 @@ var gamma = 0.98 # Gamma that makes past states values less
 
 
 func _ready():
-	nn = $NN
-	bestParticular = $BestParticular
-	reward = 0
-	best_reward = -INF
+	nn = $NN_DQN
+
 
 # Each physical time step:
 func _physics_process(_delta):
@@ -46,10 +46,8 @@ func _physics_process(_delta):
 	# Select action based on epsilon-greedy policy (A):
 	var output = act(new_state)
 	
-	# Contribute to the next state: (S'):
-	apply_central_force(-basis.z * THRUST * (output[0] + 1)/2)
-	var torque = quaternion * Vector3(output[1] * TURN_PITCH, output[2] * TURN_YAW, output[3] * TURN_ROLL)
-	apply_torque(torque)
+	# Contribute to the next state, applying the action decided into force: (S'):
+
 	
 	if not first_state:
 		# Append the experience (S, A, R, S') to the experience replay buffer:
@@ -57,7 +55,6 @@ func _physics_process(_delta):
 	
 	# Preparations to the next state:
 	previous_state = new_state
-	action = output
 	first_state = false # Now it's not anymore the first state
 	
 	# Accumulate reward:
@@ -84,19 +81,31 @@ func state():
 	input.append_array([dir_2.x, dir_2.y, dir_2.z])
 	
 	return input
+	
+	
+func impulse(action : []) -> void:
+	
+	apply_central_force(-basis.z * THRUST * (SENSE[action[0]] + 1)/2)
+	var torque = quaternion * Vector3(SENSE[action[1]] * TURN_PITCH, SENSE[action[2]] * TURN_YAW, SENSE[action[3]] * TURN_ROLL)
+	apply_torque(torque)
 
 # Epsilon-greedy policy
 func act(input):
 	var output = nn.brain(input)
-	if randf_range(0, 1.0) < epsilon:
-		for i in range(output.size()):
-			# Clamping to valorize "extreme actions"/"binary decisions"
-			output[i] = clamp(randf_range(-1.0, 1.0)*action_variability, -1, 1)
-	else:	
-		for i in range(output.size()):
-			output[i] = clamp(output[i], -1, 1)
+	var action = to_matrix(output)
+	var best_decisions = [] # best arguments for each entry
+	
+	# For each action entry, choose the epsilon greedy argument:
+	for i in range(OUTPUT_ENTRIES):
+		if randf_range(0, 1.0) < epsilon:
+			best_decisions[i] = randi() % self.action_size
+		else:	
+			# Choose the action with greater value in the entry:
+			best_decisions[i] = argmax(action[i])
+	return best_decisions
 			
-#
+
+	
 class Experience:
 	var previous_state
 	var action
@@ -110,8 +119,35 @@ class Experience:
 		
 # Learns from memorized experience
 func replay(batch_size : int):
-	var minibatch := []
+	var minibatch := [Experience]
+	var states := []
+	var targets := []
+	# Take random samples to compose the minibatch:
 	for i in range(batch_size):
 		var index = randi() % replay_buffer.size()
 		minibatch.append(replay_buffer[index])
+	for experience in minibatch:
+		target = nn.brain(experience.previous_state)
+		
 
+
+
+# Utils:
+func argmax(array):
+	var max_value = -INF
+	var max_index = -1
+	for i in range(array.size()):
+		if array[i] > max_value:
+			max_value = array[i]
+			max_index = i
+	return max_index
+
+func to_matrix(array):
+	var matrix = [[]]
+	var matrificator : int = 0
+	# Transform output of the NN into a matrix:
+	for i in range(OUTPUT_ENTRIES):
+		for j in range(ACTION_OPTIONS):
+			action[i][j] = array[matrificator]
+			matrificator += 1
+	return matrix
