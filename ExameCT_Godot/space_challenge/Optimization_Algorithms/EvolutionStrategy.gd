@@ -4,7 +4,8 @@ extends Node3D
 @export var spaceships : Array[Node]
 
 @onready var radius : float = %RingRadius.value
-@onready var time_per_ring : float= %TimePerRing.value
+@onready var time_per_ring : float = %TimePerRing.value
+@onready var deviation : float = %StandardDeviation.value
 @onready var SELECTION_TIME = time_per_ring * 2
 const QUANTITY = 50
 
@@ -65,7 +66,7 @@ func natural_selection():
 	# Selection and mutation
 	for i in range(1, spaceships.size()):
 		spaceships[i].nn.layers = spaceships[0].nn.copyLayers()
-		spaceships[i].nn.mutateNetwork(0.1)
+		spaceships[i].nn.mutateNetwork(deviation)
 	
 	# Reset positions, velocities, targets and rewards of spaceships
 	for spaceship in spaceships:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dqwg7lnsklc6m"]
+[gd_scene load_steps=16 format=3 uid="uid://dqwg7lnsklc6m"]
 
 [ext_resource type="Script" path="res://space_challenge/Optimization_Algorithms/EvolutionStrategy.gd" id="1_8sdsy"]
 [ext_resource type="Texture2D" uid="uid://bpxcnqh5s1xr4" path="res://external_assets/SpaceSkyMap.png" id="2_qu7v3"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" path="res://space_challenge/Environments/Spaceship View.gd" id="8_qieqw"]
 [ext_resource type="Script" path="res://space_challenge/Environments/RingRadius.gd" id="9_c4qfe"]
 [ext_resource type="Script" path="res://space_challenge/Environments/TimePerRing.gd" id="10_1jda0"]
+[ext_resource type="Script" path="res://space_challenge/Environments/StandardDeviation.gd" id="11_rl732"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_rmgya"]
 panorama = ExtResource("2_qu7v3")
@@ -117,6 +118,21 @@ prefix = "Time per ring:"
 custom_arrow_step = 1.0
 script = ExtResource("10_1jda0")
 
+[node name="StandardDeviation" type="SpinBox" parent="CanvasLayer"]
+unique_name_in_owner = true
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -200.0
+offset_top = 108.0
+offset_bottom = 139.0
+grow_horizontal = 0
+step = 0.01
+value = 0.1
+prefix = "Deviation:       "
+custom_arrow_step = 1.0
+script = ExtResource("11_rl732")
+
 [node name="Pivot" type="Marker3D" parent="."]
 script = ExtResource("8_m2se6")
 
@@ -131,3 +147,4 @@ current = true
 [connection signal="pressed" from="CanvasLayer/Spaceship View" to="CanvasLayer/Spaceship View" method="_on_pressed"]
 [connection signal="value_changed" from="CanvasLayer/RingRadius" to="CanvasLayer/RingRadius" method="_on_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/TimePerRing" to="CanvasLayer/TimePerRing" method="_on_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/StandardDeviation" to="CanvasLayer/StandardDeviation" method="_on_value_changed"]
