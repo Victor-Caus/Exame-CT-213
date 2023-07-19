@@ -48,10 +48,13 @@ func spaceship_scored(spaceship, ring_value):
 	spaceship.target = spaceship.next_target
 	targets_index[spaceship] += 1
 	var ti = targets_index[spaceship]
-	var increase 
-	var pivot = $"../Pivot"
+
 	if not rings.size() > ti + 1:
 		spawn_ring(rings[ti].position, RING_DIST)
 		# Increase the time that the generation executes the code
 		get_parent().SELECTION_TIME += 5
-	spaceship.next_target = rings[ti + 1]
+		rings[ti-1].get_node("ringmesh").transparency = 0.1
+		if ti>2:
+			for i in range(ti-2):
+				rings[i].get_node("ringmesh").transparency *= 1.2
+	spaceship.next_target = rings[ti+1]
