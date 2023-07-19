@@ -141,9 +141,9 @@ class Layer:
 			weightsArray.push_back(tmp_array)
 	
 	
-	func _init(n_inputs, n_neurons):
-		self.n_inputs = n_inputs
-		self.n_neurons = n_neurons
+	func _init(_n_inputs, _n_neurons):
+		self.n_inputs = _n_inputs
+		self.n_neurons = _n_neurons
 		
 		weightsArray = []
 		biasesArray = []

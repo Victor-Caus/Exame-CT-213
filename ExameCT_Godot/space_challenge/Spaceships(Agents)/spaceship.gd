@@ -29,7 +29,7 @@ func _physics_process(_delta):
 	$Exaust.visible = not transp > 0.01
 	
 	# Analyze the environment state
-	var input : Array
+	var input : Array = []
 	
 	# Velocities (in the spaceships frame os reference) 
 	var relative_lin_vel = quaternion.inverse()*linear_velocity

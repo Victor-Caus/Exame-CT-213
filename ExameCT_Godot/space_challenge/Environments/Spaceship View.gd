@@ -9,7 +9,7 @@ func _ready():
 	pass # Replace with function body.
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	if view2:
 		var reference = get_parent().get_parent().spaceships[0].position 
 		pivot.position = reference
