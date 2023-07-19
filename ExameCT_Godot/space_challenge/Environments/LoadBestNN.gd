@@ -3,7 +3,9 @@ extends Button
 @onready var space = get_parent().get_parent()
 
 func _on_pressed():
-	space.spaceships[0].nn.loadNN()
+	# Loads the NN in the last spaceship
+	space.spaceships[-1].nn.loadNN()
+	# Reset time, rings and spaceships, without causing natural selection
 	space.time = 0
 	space.SELECTION_TIME = 5
 	space.ring_manager.restart()

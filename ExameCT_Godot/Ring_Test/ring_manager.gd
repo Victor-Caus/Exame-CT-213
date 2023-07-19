@@ -36,7 +36,7 @@ func spawn_ring(origin :Vector3, spawn_distance :float):
 	var new_ring_transform = Transform3D(x_direction, y_direction, z_direction, spawn_pos)
 
 	# Spawn new ring, connect signal and add it to list
-	var new_ring = Ring.spawn(self, new_ring_transform)
+	var new_ring = Ring.spawn(self, new_ring_transform, get_parent().radius)
 	new_ring.ring_scored.connect(spaceship_scored)
 	rings.push_back(new_ring)
 	return new_ring
@@ -50,11 +50,19 @@ func spaceship_scored(spaceship, ring_value):
 	var ti = targets_index[spaceship]
 
 	if not rings.size() > ti + 1:
+		# Spawn new ring
 		spawn_ring(rings[ti].position, RING_DIST)
 		# Increase the time that the generation executes the code
-		get_parent().SELECTION_TIME += 5
+		get_parent().SELECTION_TIME += get_parent().time_per_ring
+		# Increase the trasparency of old rings
 		rings[ti-1].get_node("ringmesh").transparency = 0.1
 		if ti>2:
 			for i in range(ti-2):
 				rings[i].get_node("ringmesh").transparency *= 1.2
+		# Swap best spaceship index
+		var best_index = get_parent().spaceships.find(spaceship)
+		var temp = get_parent().spaceships[0]
+		get_parent().spaceships[0] = get_parent().spaceships[best_index]
+		get_parent().spaceships[best_index] = temp
+
 	spaceship.next_target = rings[ti+1]

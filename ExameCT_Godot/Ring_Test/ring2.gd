@@ -9,11 +9,13 @@ const RING_SCENE_FILE = "res://Ring_Test/ring2.tscn"
 var initial_positions : Dictionary
 var ring_value
 
-static func spawn(root:Node, new_trans:Transform3D):
+static func spawn(root:Node, new_trans:Transform3D, radius:float):
 	var ring = load(RING_SCENE_FILE).instantiate()
 	root.add_child(ring)
 	ring.transform = new_trans
 	ring.ring_value = 1
+	ring.get_node("ringmesh").scale *= radius
+	ring.get_node("CollisionShape3D").scale *= radius
 	return ring
 
 

@@ -3,7 +3,9 @@ extends Node3D
 @export_file("*.tscn") var spaceship_scene
 @export var spaceships : Array[Node]
 
-var SELECTION_TIME = 5
+@onready var radius : float = %RingRadius.value
+@onready var time_per_ring : float= %TimePerRing.value
+@onready var SELECTION_TIME = time_per_ring * 2
 const QUANTITY = 50
 
 var iteration : int = 0
@@ -26,7 +28,7 @@ func _physics_process(delta):
 	if time > SELECTION_TIME:
 		natural_selection()
 		time = 0
-		SELECTION_TIME = 5
+		SELECTION_TIME = time_per_ring * 2
 
 
 func generate_first_generation():
@@ -56,8 +58,9 @@ func natural_selection():
 	spaceships.sort_custom(func(a, b): return a.reward > b.reward)
 	
 	#debug
-	print("Iteration: %d  Scored rings: %d  Reward: %f" % [iteration, scored_rings - 2, spaceships[0].reward])
-	history.append(spaceships[0].reward)
+	var hist_text = "Iteration: %d  Scored rings: %d  Reward: %f" % [iteration, scored_rings - 2, spaceships[0].reward]
+	print(hist_text)
+	history.append(hist_text)
 	
 	# Selection and mutation
 	for i in range(1, spaceships.size()):
