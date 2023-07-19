@@ -40,22 +40,18 @@ func _ready():
 
 # Each physical time step:
 func _physics_process(_delta):
-	# Analyze the environment state (S)
+	# Analyze the environment reward (R) and new state (S')
 	var new_state = state()
-
-	# Select action based on epsilon-greedy policy (A):
-	var output = act(new_state)
+	reward += instantaneous_reward()
 	
-	# Contribute to the next state, applying the action decided into force: (S'):
-
+	# Select action based on epsilon-greedy policy (A):
+	var action = act(new_state)
+	impulse(action) # Contribute to the next state, applying force
 	
 	if not first_state:
 		# Append the experience (S, A, R, S') to the experience replay buffer:
 		replay_buffer.append(Experience.new(previous_state, action, reward, new_state))
 	
-	# Preparations to the next state:
-	previous_state = new_state
-	first_state = false # Now it's not anymore the first state
 	
 	# Accumulate reward:
 	cumulative_reward = gamma * cumulative_reward + reward
@@ -63,7 +59,11 @@ func _physics_process(_delta):
 	# If we have enough experience in memory, update the policy:
 	if replay_buffer.size() > 2 * BATCH_SIZE:
 		var loss = replay(BATCH_SIZE)
-
+	
+	# Preparations to the next state:
+	previous_state = new_state
+	first_state = false # Now it's not anymore the first state
+	reward = 0 
 
 # State (represented by the inputs)
 func state():
@@ -82,9 +82,8 @@ func state():
 	
 	return input
 	
-	
-func impulse(action : []) -> void:
-	
+# Executes the mechanical action
+func impulse(action) -> void:
 	apply_central_force(-basis.z * THRUST * (SENSE[action[0]] + 1)/2)
 	var torque = quaternion * Vector3(SENSE[action[1]] * TURN_PITCH, SENSE[action[2]] * TURN_YAW, SENSE[action[3]] * TURN_ROLL)
 	apply_torque(torque)
@@ -130,6 +129,13 @@ func replay(batch_size : int):
 		target = nn.brain(experience.previous_state)
 		
 
+# Reward given for each step:
+func instantaneous_reward():
+	# Punish the ships that got to far from their target 
+	reward -= 0.0001 * position.distance_to(get_parent().ring_manager.rings[-2].position)
+	# Punish if they get far from
+	reward -= 0.00001 * position.distance_to(get_parent().ring_manager.rings[-1].position)
+	# There will be one frame in which the ring will give a big reward.
 
 
 # Utils:

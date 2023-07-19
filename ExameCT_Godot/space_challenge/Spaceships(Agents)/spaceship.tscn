@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://drtfacb0adeqa"]
 
-[ext_resource type="Script" path="res://NN_DQN.gd" id="1_348ad"]
+[ext_resource type="Script" path="res://space_challenge/Spaceships(Agents)/spaceship.gd" id="1_usxli"]
 [ext_resource type="Script" path="res://NN.gd" id="2_knpsi"]
 [ext_resource type="ArrayMesh" uid="uid://d2cstfu5u7g54" path="res://external_assets/10475_Rocket_Ship_v1_L3.obj" id="3_7kolj"]
 
@@ -17,7 +17,7 @@ material = SubResource("StandardMaterial3D_0otik")
 
 [node name="Spaceship" type="RigidBody3D"]
 collision_mask = 2
-script = ExtResource("1_348ad")
+script = ExtResource("1_usxli")
 
 [node name="NN" type="Node" parent="."]
 script = ExtResource("2_knpsi")

@@ -47,10 +47,6 @@ func natural_selection():
 	var scored_rings = ring_manager.rings.size()
 	ring_manager.restart()
 	
-	# Punish the ships that got to far from their target (MUDAR DE LUGAR)
-	for spaceship in spaceships:
-		spaceship.reward -= spaceship.position.distance_to(ring_manager.rings.back().position) * 0.00001
-	
 	# Sort the fittest spaceships
 	spaceships.sort_custom(func(a, b): return a.reward > b.reward)
 	
@@ -79,4 +75,6 @@ func reset_spaceship(spaceship : Spaceship):
 	spaceship.target = ring_manager.rings[0]
 	spaceship.next_target = ring_manager.rings[1]
 	spaceship.reward = 0
+	spaceship.cumulative_reward = 0
+	spaceship.first_state = 0
 
