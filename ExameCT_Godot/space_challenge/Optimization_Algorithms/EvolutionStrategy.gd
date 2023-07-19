@@ -23,10 +23,11 @@ func _physics_process(delta):
 	time += delta
 	
 	# Natural selection occurs every SELECTION_TIME seconds
-	while time > SELECTION_TIME:
+	if time > SELECTION_TIME:
 		natural_selection()
-		time -= SELECTION_TIME
+		time = 0
 		SELECTION_TIME = 5
+
 
 func generate_first_generation():
 	# Prepare the rings
