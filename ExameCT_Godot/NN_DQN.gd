@@ -137,16 +137,26 @@ func loss(states, targets, actions):
 	for j in range(minib_size):
 		for i in range(entries_quant):
 			var Q = to_matrix(brain(states[j]))
-			sum += (targets[i][j] - Q[i][actions[j][i]])**2
+			sum += (1/2)*(targets[i][j] - Q[i][actions[j][i]])**2
 	var cost = sum/(entries_quant * minib_size)
 	return cost
 	
-func compute_gradient():
+func compute_gradient(states, targets,actions):
 	var gradient = copyLayers()
+	var deltas = [[[]]]
+	
+	for j in networkShape[-1]:
+		
+		deltas[-1][]
+	for i in range(networkShape.size()- 2, 0, -1):
+		delta = 
+		layers.append(Layer.new(networkShape[i], networkShape[i+1]))
+		
+	for i in range(networkShape.size()):
 	pass
 
 func back_propagation(states, targets, actions):
-	var gradient #= compute_gradient()
+	var gradient = compute_gradient(states, targets,actions)
 	for k in layers.size():
 		for i in range(layers[k].weightsArray.size()):
 			layers[k].biasesArray[i] -= get_parent().learning_rate * gradient[k].biasesArray[i]
@@ -172,3 +182,4 @@ func to_matrix(array):
 			matrificator += 1
 	return matrix
 
+fun

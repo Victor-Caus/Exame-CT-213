@@ -154,24 +154,24 @@ func replay(batch_size: int):
 	var minibatch = pick_random(BATCH_SIZE)
 	var states = []
 	var targets = [[]]
-	var actions = [[]]
 	for experience in minibatch:
 		var previous_state = experience[0]
+		var actions = experience[1]
 		var reward = experience[2]
 		var new_state = experience[3]
-		var target = []
+		var target = fixed_nn.brain(previous_state)
 		for i in range(OUTPUT_ENTRIES):
 			var entry_action = experience[1][i]
 			if experience.done:
-				target[i]= reward
+				target[i][actions[i]] = reward
 			else:
 				# Fixed Q-Target:
-				target[i] = reward + gamma * max(to_matrix(fixed_nn.brain(new_state))[i])
-			targets[i].append(target[i])
+				target[i][actions[i]] = reward + gamma * max(to_matrix(fixed_nn.brain(new_state))[i])
+			targets.append(to_array(target))
 		# Filtering out states for training
 		states.append(previous_state)
-		actions.append(experience[1])
-	var loss = nn.backpropagation(states, targets, actions)
+		
+	var loss = nn.backpropagation(states, targets)
 	#var history = self.model.fit(np.array(states), np.array(targets), epochs=1, verbose=0)
 	# Keeping track of loss
 	#var loss = history.history['loss'][0]
@@ -205,3 +205,14 @@ func to_matrix(array):
 			matrix[i][j] = array[matrificator]
 			matrificator += 1
 	return matrix
+	
+func to_array(matrix):
+	var array = []
+	var arrayficator := 0
+	# Transform output of the NN into a matrix:
+	for i in range(OUTPUT_ENTRIES):
+		for j in range(ACTION_OPTIONS):
+			array[arrayficator] = matrix[i][j]
+			arrayficator += 1
+	return array
+
