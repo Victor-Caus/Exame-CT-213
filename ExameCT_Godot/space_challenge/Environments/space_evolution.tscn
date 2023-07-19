@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dqwg7lnsklc6m"]
+[gd_scene load_steps=17 format=3 uid="uid://dqwg7lnsklc6m"]
 
 [ext_resource type="Script" path="res://space_challenge/Optimization_Algorithms/EvolutionStrategy.gd" id="1_8sdsy"]
 [ext_resource type="Texture2D" uid="uid://bpxcnqh5s1xr4" path="res://external_assets/SpaceSkyMap.png" id="2_qu7v3"]
@@ -12,6 +12,7 @@
 [ext_resource type="Script" path="res://space_challenge/Environments/RingRadius.gd" id="9_c4qfe"]
 [ext_resource type="Script" path="res://space_challenge/Environments/TimePerRing.gd" id="10_1jda0"]
 [ext_resource type="Script" path="res://space_challenge/Environments/StandardDeviation.gd" id="11_rl732"]
+[ext_resource type="Script" path="res://space_challenge/Environments/TimeLeft.gd" id="12_rbvse"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_rmgya"]
 panorama = ExtResource("2_qu7v3")
@@ -132,6 +133,17 @@ value = 0.1
 prefix = "Deviation:       "
 custom_arrow_step = 1.0
 script = ExtResource("11_rl732")
+
+[node name="TimeLeft" type="Label" parent="CanvasLayer"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "Time left: 0.00 s"
+script = ExtResource("12_rbvse")
 
 [node name="Pivot" type="Marker3D" parent="."]
 script = ExtResource("8_m2se6")

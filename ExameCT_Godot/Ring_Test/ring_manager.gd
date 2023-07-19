@@ -53,7 +53,7 @@ func spaceship_scored(spaceship, ring_value):
 		# Spawn new ring
 		spawn_ring(rings[ti].position, RING_DIST)
 		# Increase the time that the generation executes the code
-		get_parent().SELECTION_TIME += get_parent().time_per_ring
+		get_parent().selection_time += get_parent().time_per_ring
 		# Increase the trasparency of old rings
 		rings[ti-1].get_node("ringmesh").transparency = 0.1
 		if ti>2:

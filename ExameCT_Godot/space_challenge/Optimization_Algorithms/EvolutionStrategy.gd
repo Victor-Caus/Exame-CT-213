@@ -6,7 +6,7 @@ extends Node3D
 @onready var radius : float = %RingRadius.value
 @onready var time_per_ring : float = %TimePerRing.value
 @onready var deviation : float = %StandardDeviation.value
-@onready var SELECTION_TIME = time_per_ring * 2
+@onready var selection_time = time_per_ring * 2
 
 const QUANTITY = 50
 const MAX_RINGS = 25
@@ -27,11 +27,11 @@ func _ready():
 func _physics_process(delta):
 	time += delta
 	
-	# Natural selection occurs every SELECTION_TIME seconds
-	if time > SELECTION_TIME or ring_manager.rings.size() > MAX_RINGS:
+	# Natural selection occurs every selection_time seconds
+	if time > selection_time or ring_manager.rings.size() > MAX_RINGS:
 		natural_selection()
 		time = 0
-		SELECTION_TIME = time_per_ring * 2
+		selection_time = time_per_ring * 2
 
 
 func generate_first_generation():
