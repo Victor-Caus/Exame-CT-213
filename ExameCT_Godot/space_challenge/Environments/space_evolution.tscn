@@ -166,7 +166,6 @@ script = ExtResource("8_m2se6")
 
 [node name="Camera3D" type="Camera3D" parent="Pivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 35)
-current = true
 
 [connection signal="pressed" from="CanvasLayer/SaveBestNN" to="CanvasLayer/SaveBestNN" method="_on_pressed"]
 [connection signal="pressed" from="CanvasLayer/LoadBestNN" to="CanvasLayer/LoadBestNN" method="_on_pressed"]

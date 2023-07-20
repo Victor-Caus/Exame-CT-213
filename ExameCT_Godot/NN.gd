@@ -9,7 +9,6 @@ var layers : Array
 var autoloadNN : bool = false
 
 # PSO:
-var isPSO: bool = true
 const FIRST_MUTATE_CHANCE = 1
 const FIRST_MUTATE_AMOUT = 1
 const MAX_VEL = 1 * FIRST_MUTATE_AMOUT
@@ -22,10 +21,6 @@ func _ready():
 	
 	if autoloadNN:
 		layers = loadNN()
-	
-	if isPSO:
-		for layer in layers:
-			layer.PSO_InitializeLayer(FIRST_MUTATE_CHANCE, FIRST_MUTATE_AMOUT, MAX_VEL) # Hyperparameters!
 	
 	randomize()
 
@@ -61,7 +56,7 @@ func saveNN():
 	var save_dict = {
 		networkShape = [],
 		layers = [],
-		isPSO = var_to_str(isPSO),
+
 	}
 	
 	for i in range(networkShape.size()):
@@ -80,7 +75,6 @@ func loadNN():
 	json.parse(file.get_line())
 	var save_dict := json.get_data() as Dictionary
 	
-	isPSO = str_to_var(save_dict.isPSO)
 	
 	networkShape = []
 	for i in range(save_dict.networkShape.size()):
@@ -209,6 +203,9 @@ func mutateNetwork(deviation : float):
 	for layer in layers:
 		layer.mutateLayer(deviation)
 
+func PSO_Initialize():
+	for layer in layers:
+			layer.PSO_InitializeLayer(FIRST_MUTATE_CHANCE, FIRST_MUTATE_AMOUT, MAX_VEL) # Hyperparameters!
 
 func PSO(inertia_weight : float, cognitive_p : float, social_p: float, best_global : NN):
 	for i in range(layers.size()):

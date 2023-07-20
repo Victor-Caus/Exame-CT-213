@@ -10,14 +10,17 @@ const TURN_ROLL = 5.0
 
 
 var nn : NN
+var bestParticular : NN
 
 # Rewards and targets components
 var reward : float
+@onready var best_reward := -INF
 var target
 var next_target
 
 func _ready():
 	nn = $NN
+	bestParticular = $BestParticular
 	reward = 0
 	
 
