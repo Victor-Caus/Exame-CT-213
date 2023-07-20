@@ -131,18 +131,6 @@ func mutateNetwork(deviation : float):
 	for layer in layers:
 		layer.mutateLayer(deviation)
 
-# NN Gradient Descend:
-func loss(states, targets, actions):
-	var entries_quant = targets.size() 
-	var minib_size = states.size()
-	var sum = 0
-	for j in range(minib_size):
-		for i in range(entries_quant):
-			var Q = to_matrix(brain(states[j]))
-			sum += (1/2)*(targets[i][j] - Q[i][actions[j][i]])**2
-	var cost = sum/(entries_quant * minib_size)
-	return cost
-
 
 func compute_gradient(states, targets):
 	var final_gradient = [] # Gradient has the same shape as NN
@@ -202,12 +190,13 @@ static func sigmoid_derivative(x):
 func to_matrix(array):
 	const OUTPUT_ENTRIES = 4 
 	const ACTION_OPTIONS = 3
-	var matrix = [[]]
+	var matrix : Array[Array] = []
 	var matrificator : int = 0
 	# Transform output of the NN into a matrix:
 	for i in range(OUTPUT_ENTRIES):
+		matrix.push_back([])
 		for j in range(ACTION_OPTIONS):
-			matrix[i][j] = array[matrificator]
+			matrix[i].push_back(array[matrificator])
 			matrificator += 1
 	return matrix
 

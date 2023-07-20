@@ -66,7 +66,7 @@ func _physics_process(_delta):
 	
 	# If we have enough experience in memory, update the policy:
 	if replay_buffer.size() > 2 * BATCH_SIZE:
-		var loss = replay(BATCH_SIZE)
+		replay()
 	
 	# Preparations to the next state:
 	previous_state = new_state
@@ -75,14 +75,20 @@ func _physics_process(_delta):
 
 # State (represented by the inputs)
 func state():
-	var input = [linear_velocity.x, linear_velocity.y, linear_velocity.z]
-	input.append_array([angular_velocity.x, angular_velocity.y, angular_velocity.z])
+	# Analyze the environment state
+	var input : Array = []
 	
+	# Velocities (in the spaceships frame os reference) 
+	var relative_lin_vel = quaternion.inverse()*linear_velocity
+	input.append_array([relative_lin_vel.x, relative_lin_vel.y, relative_lin_vel.z])
+	var relative_ang_vel = quaternion.inverse()*angular_velocity
+	input.append_array([relative_ang_vel.x, relative_ang_vel.y, relative_ang_vel.z])
+	# First target position (in the spaceships frame os reference) 
 	var relative_pos_1 = quaternion.inverse()*(target.position - position)
 	input.append_array([relative_pos_1.x, relative_pos_1.y, relative_pos_1.z])
 	var dir_1 = quaternion.inverse()*target.basis.z # Ring direction
 	input.append_array([dir_1.x, dir_1.y, dir_1.z])
-	
+	# Second target position (in the spaceships frame os reference) 
 	var relative_pos_2 = quaternion.inverse()*(next_target.position - position)
 	input.append_array([relative_pos_2.x, relative_pos_2.y, relative_pos_2.z])
 	var dir_2 = quaternion.inverse()*next_target.basis.z # Ring direction
@@ -130,7 +136,7 @@ func add_to_buffer(item):
 	if replay_buffer.size() > BUFFER_SIZE:
 		replay_buffer.pop_front()
 
-func pick_random(batch_size):
+func pick_random():
 	var indices = []
 	for i in range(BATCH_SIZE):
 		indices.append(randi() % replay_buffer.size())
@@ -140,16 +146,8 @@ func pick_random(batch_size):
 	return minibatch
 
 # Learns from memorized experience
-func replay(batch_size: int):
-	"""
-	Learns from memorized experience.
-
-	:param batch_size: size of the minibatch taken from the replay buffer.
-	:type batch_size: int.
-	:return: loss computed during the neural network training.
-	:rtype: float.
-	"""
-	var minibatch = pick_random(BATCH_SIZE)
+func replay():
+	var minibatch = pick_random()
 	var states = []
 	var targets = []
 	for experience in minibatch:
@@ -157,20 +155,19 @@ func replay(batch_size: int):
 		var actions = experience.action
 		var reward = experience.reward
 		var new_state = experience.new_state
-		var target = fixed_nn.brain(previous_state)
+		var target = to_matrix(fixed_nn.brain(previous_state))
 		var output_matrix = to_matrix(fixed_nn.brain(new_state))
 		for i in range(OUTPUT_ENTRIES):
-			var entry_action = experience.action[i]
 			if experience.done:
-				target[3*i + actions[i]] = reward
+				target[i][actions[i]] = reward
 			else:
 				# Fixed Q-Target:
-				target[3*i + actions[i]] = reward + gamma * (output_matrix[i]).max()
-			targets.append(target)
+				target[i][actions[i]] = reward + gamma * (output_matrix[i]).max()
+			targets.append(to_array(target))
 		# Filtering out states for training
 		states.append(previous_state)
 		
-	var loss = nn.backpropagation(states, targets)
+	nn.backpropagation(states, targets)
 	#var history = self.model.fit(np.array(states), np.array(targets), epochs=1, verbose=0)
 	# Keeping track of loss
 	#var loss = history.history['loss'][0]
@@ -179,10 +176,7 @@ func replay(batch_size: int):
 # Reward given for each step:
 func instantaneous_reward():
 	# Punish the ships that got to far from their target 
-	return -0.00001 * position.distance_to(get_parent().ring_manager.rings[-2].position)
-	# Punish if they get far from
-	#reward -= 0.00001 * position.distance_to(get_parent().ring_manager.rings[-1].position)
-	# There will be one frame in which the ring will give a big reward.
+	return -0.1 * position.distance_to(get_parent().ring_manager.rings[-2].position)
 
 
 # Utils:
@@ -208,11 +202,9 @@ func to_matrix(array):
 	
 func to_array(matrix):
 	var array = []
-	var arrayficator := 0
 	# Transform output of the NN into a matrix:
 	for i in range(OUTPUT_ENTRIES):
 		for j in range(ACTION_OPTIONS):
-			array[arrayficator] = matrix[i][j]
-			arrayficator += 1
+			array.push_back(matrix[i][j])
 	return array
 

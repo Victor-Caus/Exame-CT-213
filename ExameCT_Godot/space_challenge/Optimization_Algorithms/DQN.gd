@@ -8,10 +8,10 @@ extends Node3D
 @onready var deviation : float = %StandardDeviation.value
 @onready var selection_time = time_per_ring * 2
 
-@export var Q_TARGET_TIME = 0.3
+@export var Q_TARGET_TIME = 1
 # Constants
 const QUANTITY = 1
-const GLIE_RATE = 0.99
+const GLIE_RATE = 0.95
 
 var epoche : int = 0
 var time := 0.0
