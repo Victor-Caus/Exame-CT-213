@@ -18,14 +18,16 @@ material = SubResource("StandardMaterial3D_0otik")
 [node name="Spaceship_DQN2" type="RigidBody3D"]
 collision_mask = 2
 script = ExtResource("1_rt7d0")
+gamma = 0.99
+learning_rate = 0.2
 
 [node name="NN_DQN" type="Node" parent="."]
 script = ExtResource("2_3l32j")
-networkShape = Array[int]([18, 20, 20, 4])
+networkShape = Array[int]([16, 20, 20, 4])
 
 [node name="FIXED_DQN" type="Node" parent="."]
 script = ExtResource("2_3l32j")
-networkShape = Array[int]([18, 20, 20, 4])
+networkShape = Array[int]([16, 20, 20, 4])
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.003, 0, 0, 0, -0.003, 4.52987e-10, 0, -4.52987e-10, -0.003, 0, 0, 0.6)

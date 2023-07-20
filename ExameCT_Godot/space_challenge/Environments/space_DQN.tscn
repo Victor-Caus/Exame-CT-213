@@ -27,7 +27,7 @@ sky = SubResource("Sky_tqprb")
 
 [node name="space_DQN" type="Node3D"]
 script = ExtResource("1_dkf08")
-spaceship_scene = "res://space_challenge/Spaceships(Agents)/spaceship_DQN.tscn"
+spaceship_scene = "res://space_challenge/Spaceships(Agents)/spaceship_DQN2.tscn"
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.875042, -0.418578, 0.24309, 0, 0.502205, 0.864748, -0.484046, -0.756692, 0.439451, 0, 11.0538, 7.25927)

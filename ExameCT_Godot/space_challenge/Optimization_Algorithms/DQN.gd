@@ -55,7 +55,7 @@ func generate_first_generation():
 		reset_spaceship(spaceship)
 		add_child(spaceship)
 		spaceships.push_back(spaceship)
-		spaceship.nn.mutateNetwork(1)
+		spaceship.nn.mutateNetwork(0.01)
 		# Fixed nn starts copying the parameters of action-value:
 		spaceship.fixed_nn.layers = spaceship.nn.copyLayers()
 

@@ -6,7 +6,6 @@ class_name NN_DQN
 var layers : Array
 
 # Save and Load System:
-var isPSO : bool = false
 var autoloadNN : bool = false
 
 func _ready():
@@ -51,7 +50,6 @@ func saveNN():
 	var save_dict = {
 		networkShape = [],
 		layers = [],
-		isPSO = var_to_str(isPSO),
 	}
 	
 	for i in range(networkShape.size()):
@@ -68,8 +66,6 @@ func loadNN():
 	var json := JSON.new()
 	json.parse(file.get_line())
 	var save_dict := json.get_data() as Dictionary
-	
-	isPSO = str_to_var(save_dict.isPSO)
 	
 	networkShape = []
 	for i in range(save_dict.networkShape.size()):
@@ -89,6 +85,42 @@ class Layer:
 	var a : Array
 	var n_inputs : int
 	var n_neurons : int
+	
+	func layer_to_dict():
+		var save_dict = {
+			weightsArray = [],
+			biasesArray = [],
+			n_inputs = var_to_str(n_inputs),
+			n_neurons = var_to_str(n_neurons),
+		}
+		
+		for bias in biasesArray:
+			save_dict.biasesArray.push_back(var_to_str(bias))
+		
+		for weights in weightsArray:
+			var tmp_array : Array = []
+			for weight in weights:
+				tmp_array.push_back(var_to_str(weight))
+			save_dict.weightsArray.push_back(tmp_array)
+			
+		return save_dict
+	
+	
+	func dict_to_layer(save_dict : Dictionary):
+		n_neurons = str_to_var(save_dict.n_neurons)
+		n_inputs = str_to_var(save_dict.n_inputs)
+		
+		biasesArray.clear()
+		for bias in save_dict.biasesArray:
+			biasesArray.push_back(str_to_var(bias))
+		
+		weightsArray.clear()
+		for weights in save_dict.weightsArray:
+			var tmp_array : Array = []
+			for weight in weights:
+				tmp_array.push_back(str_to_var(weight))
+			weightsArray.push_back(tmp_array)
+	
 	
 	func _init(n_inputs, n_neurons):
 		self.n_inputs = n_inputs

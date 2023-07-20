@@ -29,7 +29,7 @@ var epsilon = 1
 @export var learning_rate = 0.5
 @onready var first_state = true
 const BUFFER_SIZE = 4098
-const BATCH_SIZE = 16 # batch size of experience replay 
+const BATCH_SIZE = 8 # batch size of experience replay 
 @onready var replay_buffer = []
 var return_history = []
 var previous_state
@@ -78,21 +78,22 @@ func state():
 	# Analyze the environment state
 	var input : Array = []
 	
+	# Input in spherical coordinates
 	# Velocities (in the spaceships frame os reference) 
-	var relative_lin_vel = quaternion.inverse()*linear_velocity
+	var relative_lin_vel = spherical_coordinate(quaternion.inverse()*linear_velocity)
 	input.append_array([relative_lin_vel.x, relative_lin_vel.y, relative_lin_vel.z])
-	var relative_ang_vel = quaternion.inverse()*angular_velocity
+	var relative_ang_vel = quaternion.inverse()*angular_velocity # Cartesian coordinates
 	input.append_array([relative_ang_vel.x, relative_ang_vel.y, relative_ang_vel.z])
 	# First target position (in the spaceships frame os reference) 
-	var relative_pos_1 = quaternion.inverse()*(target.position - position)
+	var relative_pos_1 = spherical_coordinate(quaternion.inverse()*(target.position - position))
 	input.append_array([relative_pos_1.x, relative_pos_1.y, relative_pos_1.z])
-	var dir_1 = quaternion.inverse()*target.basis.z # Ring direction
-	input.append_array([dir_1.x, dir_1.y, dir_1.z])
+	var dir_1 = spherical_coordinate(quaternion.inverse()*target.basis.z)
+	input.append_array([dir_1.y, dir_1.z])  # Ring direction
 	# Second target position (in the spaceships frame os reference) 
-	var relative_pos_2 = quaternion.inverse()*(next_target.position - position)
+	var relative_pos_2 = spherical_coordinate(quaternion.inverse()*(next_target.position - position))
 	input.append_array([relative_pos_2.x, relative_pos_2.y, relative_pos_2.z])
-	var dir_2 = quaternion.inverse()*next_target.basis.z # Ring direction
-	input.append_array([dir_2.x, dir_2.y, dir_2.z])
+	var dir_2 = spherical_coordinate(quaternion.inverse()*next_target.basis.z)
+	input.append_array([dir_2.y, dir_2.z]) # Ring direction
 	
 	return input
 	
@@ -214,3 +215,9 @@ func to_array(matrix):
 			array.push_back(matrix[i][j])
 	return array
 
+
+func spherical_coordinate(vector:Vector3) -> Vector3:
+	var r = vector.length()
+	var theta = vector.angle_to(Vector3.FORWARD)
+	var phi = atan2(vector.y, vector.x)
+	return Vector3(r, theta, phi)
