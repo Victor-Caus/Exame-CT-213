@@ -176,7 +176,7 @@ func replay():
 # Reward given for each step:
 func instantaneous_reward():
 	# Punish the ships that got to far from their target 
-	return -0.1 * position.distance_to(get_parent().ring_manager.rings[-2].position)
+	return -0.00001 * position.distance_to(get_parent().ring_manager.rings[-2].position)
 
 
 # Utils:
