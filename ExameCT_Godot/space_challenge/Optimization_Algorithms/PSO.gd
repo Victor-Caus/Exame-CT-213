@@ -1,11 +1,19 @@
 extends Node3D
 
-@export_file() var spaceship_scene
+@export_file("*.tscn") var spaceship_scene
 @export var spaceships : Array[Node]
 
-var selection_time = 5
+@onready var radius : float = %RingRadius.value
+@onready var time_per_ring : float = %TimePerRing.value
+@onready var deviation : float = %StandardDeviation.value
+@onready var selection_time = time_per_ring * 2
+
 const QUANTITY = 50
 const SELECTED_QUANTITY = 10
+
+var iteration : int = 0
+var time := 0.0
+var ring_manager : Node3D
 
 # PSO hyperparameters
 const INITIAL_MUTATION_CHANCE = 1
@@ -16,14 +24,12 @@ const INERTIA_SCHEDULE = 0.01
 var COGNITIVE_P = 0.6 #0.6
 const SOCIAL_P = 0.8 #0.8
 
-var iteration : int = 0
-var time := 0.0
-var ring_manager : Node3D
-
 # global max:
 var globalBest : NN
 var globalBestReward : float
 
+# Data
+var history = []
 
 func _ready():
 	globalBest = NN.new()
@@ -38,8 +44,9 @@ func _physics_process(delta):
 	# Natural selection occurs every selection_time seconds
 	while time > selection_time:
 		natural_selection()
-		time -= selection_time
-		selection_time = 5
+		time = 0
+		selection_time = time_per_ring * 2
+
 
 func generate_first_generation():
 	# Prepare the rings
@@ -52,16 +59,18 @@ func generate_first_generation():
 		reset_spaceship(spaceship)
 		add_child(spaceship)
 		spaceships.push_back(spaceship)
-		
-	
+		spaceship.nn.PSO_Initialize()
+
+
 
 func natural_selection():
 	# Delete old rings
+	var scored_rings = ring_manager.rings.size() - 2
 	ring_manager.restart()
 	
 	# In this example let's give the reward only in selection:
 	for spaceship in spaceships:
-		spaceship.reward -= spaceship.position.distance_to(spaceship.target.position) * 0.01
+		spaceship.reward -= spaceship.position.distance_to(ring_manager.rings.back().position) * 0.001
 		# Update best spaceship
 		if spaceship.reward > spaceship.best_reward:
 			spaceship.best_reward = spaceship.reward
@@ -77,10 +86,10 @@ func natural_selection():
 		globalBestReward = spaceships[0].reward
 		globalBest.layers = spaceships[0].nn.copyLayers()
 	
-	#debug
-	print(iteration)
-	print(spaceships[0].reward)
-	print(globalBestReward)
+	# Debug and save in story array for convergency graphs
+	var hist_text = "Iteration: %d  Scored rings: %d  Reward: %f" % [iteration, scored_rings, spaceships[0].reward]
+	print(hist_text)
+	history.append(hist_text)
 	
 	for spaceship in spaceships:
 		# Update PSO
@@ -89,8 +98,9 @@ func natural_selection():
 		reset_spaceship(spaceship)
 	
 	# Schedule for inertia weight
+	#INERTIA_WEIGHT = INERTIA_WEIGHT / (1 + INERTIA_SCHEDULE * iteration)
 	iteration += 1
-	INERTIA_WEIGHT = INERTIA_WEIGHT / (1 + INERTIA_SCHEDULE * iteration)
+	
 
 
 func reset_spaceship(spaceship):

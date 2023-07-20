@@ -166,7 +166,7 @@ func compute_gradient(states, targets):
 					else:
 						gradient[l].weightsArray[j][k] = delta_j * layers[l-1].a[k]
 					final_gradient[l].weightsArray[j][k] += gradient[l].weightsArray[j][k]/states.size()
-	
+
 	return final_gradient
 
 

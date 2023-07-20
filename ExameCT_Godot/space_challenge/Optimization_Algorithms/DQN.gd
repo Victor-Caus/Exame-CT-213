@@ -78,7 +78,7 @@ func natural_selection():
 	epoche += 1
 
 
-func reset_spaceship(spaceship : Spaceship_DQN):
+func reset_spaceship(spaceship : Spaceship_DQN2):
 	spaceship.position = Vector3.ZERO
 	spaceship.rotation = Vector3.ZERO
 	spaceship.linear_velocity = Vector3.ZERO
