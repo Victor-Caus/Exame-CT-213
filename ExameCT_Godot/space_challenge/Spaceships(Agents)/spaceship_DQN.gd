@@ -26,8 +26,7 @@ var next_target
 var epsilon = 1
 @export var epsilon_min = 0.05
 @export var gamma = 0.98 # Gamma that makes past states values less
-@export var learning_rate = 0.5 
-var action_variability = 2
+@export var learning_rate = 0.5
 @onready var first_state = true
 const BUFFER_SIZE = 4098
 const BATCH_SIZE = 4 # batch size of experience replay 
@@ -180,7 +179,7 @@ func replay(batch_size: int):
 # Reward given for each step:
 func instantaneous_reward():
 	# Punish the ships that got to far from their target 
-	return -0.0001 * position.distance_to(get_parent().ring_manager.rings[-2].position)
+	return -0.00001 * position.distance_to(get_parent().ring_manager.rings[-2].position)
 	# Punish if they get far from
 	#reward -= 0.00001 * position.distance_to(get_parent().ring_manager.rings[-1].position)
 	# There will be one frame in which the ring will give a big reward.

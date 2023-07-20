@@ -11,7 +11,7 @@ extends Node3D
 @export var Q_TARGET_TIME = 0.3
 # Constants
 const QUANTITY = 1
-const GLIE_RATE = 0.01
+const GLIE_RATE = 0.99
 
 var epoche : int = 0
 var time := 0.0
@@ -64,9 +64,6 @@ func natural_selection():
 	# Delete old rings
 	var scored_rings = ring_manager.rings.size() - 2
 	ring_manager.restart()
-	
-	# Sort the fittest spaceships
-	spaceships.sort_custom(func(a, b): return a.reward > b.reward)
 	
 	# Debug and save in story array for convergency graphs
 	var hist_text = "Epoche: %d  Scored rings: %d  Reward: %f" % [epoche, scored_rings, spaceships[0].cumulative_reward]
