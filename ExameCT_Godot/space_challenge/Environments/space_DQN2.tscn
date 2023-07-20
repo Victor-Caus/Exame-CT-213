@@ -3,17 +3,17 @@
 [ext_resource type="Script" path="res://space_challenge/Optimization_Algorithms/DQN.gd" id="1_56m2r"]
 [ext_resource type="Texture2D" uid="uid://bpxcnqh5s1xr4" path="res://external_assets/SpaceSkyMap.png" id="2_7ohgb"]
 [ext_resource type="PackedScene" uid="uid://ctluyj2ir5gjj" path="res://Ring_Test/ring_manager.tscn" id="3_jkyfx"]
-[ext_resource type="Script" path="res://space_challenge/Environments/Scripts/SaveBestNN.gd" id="4_vu0gh"]
-[ext_resource type="Script" path="res://space_challenge/Environments/LoadBestNN.gd" id="5_8cxka"]
+[ext_resource type="Script" path="res://space_challenge/UI/SaveBestNN.gd" id="4_hojuu"]
+[ext_resource type="Script" path="res://space_challenge/UI/LoadBestNN.gd" id="5_07xwa"]
 [ext_resource type="Script" path="res://space_challenge/Environments/Scripts/ExportConvergency.gd" id="6_f3ajg"]
-[ext_resource type="Script" path="res://space_challenge/Environments/global view.gd" id="7_rmejq"]
-[ext_resource type="Script" path="res://space_challenge/Environments/Spaceship View.gd" id="8_ebq84"]
-[ext_resource type="Script" path="res://space_challenge/Environments/RingDistance.gd" id="9_1qqjd"]
-[ext_resource type="Script" path="res://space_challenge/Environments/RingRadius.gd" id="10_1h2yu"]
-[ext_resource type="Script" path="res://space_challenge/Environments/TimePerRing.gd" id="11_7i22m"]
-[ext_resource type="Script" path="res://space_challenge/Environments/StandardDeviation.gd" id="12_dfrm7"]
-[ext_resource type="Script" path="res://space_challenge/Environments/TimeLeft.gd" id="13_kaqu2"]
-[ext_resource type="Script" path="res://space_challenge/Environments/Pivot.gd" id="14_ferx0"]
+[ext_resource type="Script" path="res://space_challenge/UI/global view.gd" id="7_w53s7"]
+[ext_resource type="Script" path="res://space_challenge/UI/Spaceship View.gd" id="8_sered"]
+[ext_resource type="Script" path="res://space_challenge/UI/RingDistance.gd" id="9_jir06"]
+[ext_resource type="Script" path="res://space_challenge/UI/RingRadius.gd" id="10_ltgdo"]
+[ext_resource type="Script" path="res://space_challenge/UI/TimePerRing.gd" id="11_wowpd"]
+[ext_resource type="Script" path="res://space_challenge/UI/StandardDeviation.gd" id="12_6ovxg"]
+[ext_resource type="Script" path="res://space_challenge/UI/TimeLeft.gd" id="13_ck3dg"]
+[ext_resource type="Script" path="res://space_challenge/UI/Pivot.gd" id="14_1l8q7"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_clha8"]
 panorama = ExtResource("2_7ohgb")
@@ -25,7 +25,7 @@ sky_material = SubResource("PanoramaSkyMaterial_clha8")
 background_mode = 2
 sky = SubResource("Sky_tqprb")
 
-[node name="space_DQN" type="Node3D"]
+[node name="space_DQN2" type="Node3D"]
 script = ExtResource("1_56m2r")
 spaceship_scene = "res://space_challenge/Spaceships(Agents)/spaceship_DQN2.tscn"
 
@@ -54,14 +54,14 @@ offset_right = 8.0
 offset_bottom = 8.0
 text = "Save Best NN
 "
-script = ExtResource("4_vu0gh")
+script = ExtResource("4_hojuu")
 
 [node name="LoadBestNN" type="Button" parent="CanvasLayer"]
 offset_top = 39.0
 offset_right = 8.0
 offset_bottom = 47.0
 text = "Load NN"
-script = ExtResource("5_8cxka")
+script = ExtResource("5_07xwa")
 
 [node name="ExportConvergency" type="Button" parent="CanvasLayer"]
 anchors_preset = 1
@@ -79,7 +79,7 @@ offset_right = 412.0
 offset_bottom = 31.0
 text = "Global View
 "
-script = ExtResource("7_rmejq")
+script = ExtResource("7_w53s7")
 
 [node name="Spaceship View" type="Button" parent="CanvasLayer"]
 offset_left = 295.0
@@ -88,7 +88,7 @@ offset_right = 425.0
 offset_bottom = 72.0
 text = "Spaceship View
 "
-script = ExtResource("8_ebq84")
+script = ExtResource("8_sered")
 
 [node name="RingDistance" type="SpinBox" parent="CanvasLayer"]
 unique_name_in_owner = true
@@ -103,7 +103,7 @@ step = 0.01
 value = 6.0
 prefix = "Ring distance:"
 custom_arrow_step = 1.0
-script = ExtResource("9_1qqjd")
+script = ExtResource("9_jir06")
 
 [node name="RingRadius" type="SpinBox" parent="CanvasLayer"]
 unique_name_in_owner = true
@@ -118,7 +118,7 @@ step = 0.01
 value = 2.0
 prefix = "Ring radius:    "
 custom_arrow_step = 1.0
-script = ExtResource("10_1h2yu")
+script = ExtResource("10_ltgdo")
 
 [node name="TimePerRing" type="SpinBox" parent="CanvasLayer"]
 unique_name_in_owner = true
@@ -133,7 +133,7 @@ step = 0.01
 value = 4.0
 prefix = "Time per ring:"
 custom_arrow_step = 1.0
-script = ExtResource("11_7i22m")
+script = ExtResource("11_wowpd")
 
 [node name="StandardDeviation" type="SpinBox" parent="CanvasLayer"]
 unique_name_in_owner = true
@@ -148,7 +148,7 @@ step = 0.01
 value = 0.1
 prefix = "Deviation:       "
 custom_arrow_step = 1.0
-script = ExtResource("12_dfrm7")
+script = ExtResource("12_6ovxg")
 
 [node name="TimeLeft" type="Label" parent="CanvasLayer"]
 anchors_preset = 5
@@ -159,10 +159,10 @@ offset_right = 20.0
 offset_bottom = 23.0
 grow_horizontal = 2
 text = "Time left: 0.00 s"
-script = ExtResource("13_kaqu2")
+script = ExtResource("13_ck3dg")
 
 [node name="Pivot" type="Marker3D" parent="."]
-script = ExtResource("14_ferx0")
+script = ExtResource("14_1l8q7")
 
 [node name="Camera3D" type="Camera3D" parent="Pivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 35)
