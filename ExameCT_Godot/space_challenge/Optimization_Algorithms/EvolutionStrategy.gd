@@ -51,7 +51,7 @@ func generate_first_generation():
 
 func natural_selection():
 	# Delete old rings
-	var scored_rings = ring_manager.rings.size()
+	var scored_rings = ring_manager.rings.size() - 2
 	ring_manager.restart()
 	
 	# Punish the ships that got to far from their target
@@ -61,8 +61,8 @@ func natural_selection():
 	# Sort the fittest spaceships
 	spaceships.sort_custom(func(a, b): return a.reward > b.reward)
 	
-	#debug
-	var hist_text = "Iteration: %d  Scored rings: %d  Reward: %f" % [iteration, scored_rings - 2, spaceships[0].reward]
+	# Debug and save in story array for convergency graphs
+	var hist_text = "Iteration: %d  Scored rings: %d  Reward: %f" % [iteration, scored_rings, spaceships[0].reward]
 	print(hist_text)
 	history.append(hist_text)
 	

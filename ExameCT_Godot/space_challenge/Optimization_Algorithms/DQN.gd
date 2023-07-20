@@ -3,9 +3,13 @@ extends Node3D
 @export_file("*.tscn") var spaceship_scene
 @export var spaceships : Array[Node]
 
-# Constants
+@onready var radius : float = %RingRadius.value
+@onready var time_per_ring : float = %TimePerRing.value
+@onready var deviation : float = %StandardDeviation.value
+@onready var selection_time = time_per_ring * 2
+
 @export var Q_TARGET_TIME = 0.3
-var selection_time = 5
+# Constants
 const QUANTITY = 1
 const GLIE_RATE = 0.01
 
@@ -19,6 +23,7 @@ var history = []
 
 func _ready():
 	ring_manager = $RingManager
+	ring_manager.ring_dist = %RingDistance.value
 	generate_first_generation()
 	epoche = 0
 
@@ -28,10 +33,10 @@ func _physics_process(delta):
 	q_time += delta
 	
 	# Natural selection occurs every selection_time seconds
-	while time > selection_time:
+	if time > selection_time:
 		natural_selection()
-		time -= selection_time
-		selection_time = 5
+		time = 0
+		selection_time = time_per_ring * 2
 		
 	# Copy nn to Fixed Q-Target:
 	while q_time >= Q_TARGET_TIME:
@@ -57,20 +62,16 @@ func generate_first_generation():
 
 func natural_selection():
 	# Delete old rings
-	var scored_rings = ring_manager.rings.size()
+	var scored_rings = ring_manager.rings.size() - 2
 	ring_manager.restart()
 	
 	# Sort the fittest spaceships
 	spaceships.sort_custom(func(a, b): return a.reward > b.reward)
 	
 	# Debug and save in story array for convergency graphs
-	print("Epoche: %d  Scored rings: %d  Reward: %f" % [epoche, scored_rings - 2, spaceships[0].reward])
-	history.append(spaceships[0].reward)
-	
-	# Selection and mutation
-	for i in range(1, spaceships.size()):
-		spaceships[i].nn.layers = spaceships[0].nn.copyLayers()
-		spaceships[i].nn.mutateNetwork(0.1)
+	var hist_text = "Epoche: %d  Scored rings: %d  Reward: %f" % [epoche, scored_rings, spaceships[0].cumulative_reward]
+	print(hist_text)
+	history.append(hist_text)
 	
 	# Reset positions, velocities, targets and rewards of spaceships
 	for spaceship in spaceships:
@@ -80,7 +81,7 @@ func natural_selection():
 	epoche += 1
 
 
-func reset_spaceship(spaceship : Spaceship):
+func reset_spaceship(spaceship : Spaceship_DQN):
 	spaceship.position = Vector3.ZERO
 	spaceship.rotation = Vector3.ZERO
 	spaceship.linear_velocity = Vector3.ZERO

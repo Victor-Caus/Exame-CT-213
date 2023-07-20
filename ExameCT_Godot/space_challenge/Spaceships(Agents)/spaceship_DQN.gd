@@ -10,8 +10,8 @@ const TURN_ROLL = 5.0
 const SENSE = [-1.0 , 0.0 , 1.0] # Array that gives the "direction" of force
 
 # NN variables:
-var nn : NN # action-value
-var fixed_nn : NN # target action-value
+var nn : NN_DQN # action-value
+var fixed_nn : NN_DQN # target action-value
 const OUTPUT_ENTRIES = 4
 const ACTION_OPTIONS = 3
 
@@ -30,7 +30,7 @@ var epsilon = 1
 var action_variability = 2
 @onready var first_state = true
 const BUFFER_SIZE = 4098
-const BATCH_SIZE = 32 # batch size of experience replay 
+const BATCH_SIZE = 4 # batch size of experience replay 
 @onready var replay_buffer = []
 var return_history = []
 var previous_state
@@ -106,14 +106,13 @@ func act(input):
 	# For each action entry, choose the epsilon greedy argument:
 	for i in range(OUTPUT_ENTRIES):
 		if randf_range(0, 1.0) < epsilon:
-			best_decisions[i] = randi() % self.action_size
+			best_decisions.push_back(randi() % ACTION_OPTIONS)
 		else:	
 			# Choose the action with greater value in the entry:
-			best_decisions[i] = argmax(action[i])
+			best_decisions.push_back(argmax(action[i]))
 	return best_decisions
-			
 
-	
+
 class Experience:
 	var previous_state
 	var action
@@ -153,21 +152,22 @@ func replay(batch_size: int):
 	"""
 	var minibatch = pick_random(BATCH_SIZE)
 	var states = []
-	var targets = [[]]
+	var targets = []
 	for experience in minibatch:
-		var previous_state = experience[0]
-		var actions = experience[1]
-		var reward = experience[2]
-		var new_state = experience[3]
+		var previous_state = experience.previous_state
+		var actions = experience.action
+		var reward = experience.reward
+		var new_state = experience.new_state
 		var target = fixed_nn.brain(previous_state)
+		var output_matrix = to_matrix(fixed_nn.brain(new_state))
 		for i in range(OUTPUT_ENTRIES):
-			var entry_action = experience[1][i]
+			var entry_action = experience.action[i]
 			if experience.done:
-				target[i][actions[i]] = reward
+				target[3*i + actions[i]] = reward
 			else:
 				# Fixed Q-Target:
-				target[i][actions[i]] = reward + gamma * max(to_matrix(fixed_nn.brain(new_state))[i])
-			targets.append(to_array(target))
+				target[3*i + actions[i]] = reward + gamma * (output_matrix[i]).max()
+			targets.append(target)
 		# Filtering out states for training
 		states.append(previous_state)
 		
@@ -180,7 +180,7 @@ func replay(batch_size: int):
 # Reward given for each step:
 func instantaneous_reward():
 	# Punish the ships that got to far from their target 
-	reward -= 0.0001 * position.distance_to(get_parent().ring_manager.rings[-2].position)
+	return -0.0001 * position.distance_to(get_parent().ring_manager.rings[-2].position)
 	# Punish if they get far from
 	#reward -= 0.00001 * position.distance_to(get_parent().ring_manager.rings[-1].position)
 	# There will be one frame in which the ring will give a big reward.
@@ -197,12 +197,13 @@ func argmax(array):
 	return max_index
 
 func to_matrix(array):
-	var matrix = [[]]
+	var matrix : Array[Array] = []
 	var matrificator : int = 0
 	# Transform output of the NN into a matrix:
 	for i in range(OUTPUT_ENTRIES):
+		matrix.push_back([])
 		for j in range(ACTION_OPTIONS):
-			matrix[i][j] = array[matrificator]
+			matrix[i].push_back(array[matrificator])
 			matrificator += 1
 	return matrix
 	
