@@ -33,7 +33,7 @@ const BATCH_SIZE = 4 # batch size of experience replay
 @onready var replay_buffer = []
 var return_history = []
 var previous_state
-var action
+var previous_action
 
 
 
@@ -57,9 +57,9 @@ func _physics_process(_delta):
 	if not first_state:
 		# Append the experience (S, A, R, S', done), but let's see if it's done:
 		if get_parent().time + _delta > get_parent().selection_time: 
-			add_to_buffer(Experience.new(previous_state, action, reward, new_state,true))
+			add_to_buffer(Experience.new(previous_state, previous_action, reward, new_state,true))
 		else:
-			add_to_buffer(Experience.new(previous_state, action, reward, new_state,false))
+			add_to_buffer(Experience.new(previous_state, previous_action, reward, new_state,false))
 	
 	# Accumulate reward:
 	cumulative_reward = gamma * cumulative_reward + reward
@@ -70,6 +70,7 @@ func _physics_process(_delta):
 	
 	# Preparations to the next state:
 	previous_state = new_state
+	previous_action = action
 	first_state = false # Now it's not anymore the first state
 	reward = 0 
 
@@ -135,7 +136,7 @@ class Experience:
 func add_to_buffer(item):
 	replay_buffer.append(item)
 	if replay_buffer.size() > BUFFER_SIZE:
-		replay_buffer.pop_front()
+		replay_buffer.pop_back()
 
 func pick_random():
 	var indices = []
