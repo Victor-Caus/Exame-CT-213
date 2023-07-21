@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://dqwg7lnsklc6m"]
+[gd_scene load_steps=18 format=3 uid="uid://c377157qjwgyr"]
 
 [ext_resource type="Script" path="res://space_challenge/Optimization_Algorithms/EvolutionStrategy.gd" id="1_8sdsy"]
 [ext_resource type="Texture2D" uid="uid://bpxcnqh5s1xr4" path="res://external_assets/SpaceSkyMap.png" id="2_qu7v3"]

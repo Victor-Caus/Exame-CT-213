@@ -5,12 +5,12 @@ class_name NN
 @export var networkShape : Array[int]
 var layers : Array
 
-# PSO:
+# PSO hyperparameters:
 const FIRST_MUTATE_CHANCE = 1
 const FIRST_MUTATE_AMOUT = 1
 const MAX_VEL = 1 * FIRST_MUTATE_AMOUT
 
-
+# Called when the node enters the scene tree for the first time.
 func _ready():
 	layers = []
 	for i in range(networkShape.size() - 1):
@@ -45,9 +45,12 @@ func copyLayers() -> Array:
 
 # File Save and Load System
 func saveNN():
-	var file = FileAccess.open("res://Data/bestNN", FileAccess.WRITE)
+	var folder := OS.get_executable_path().get_base_dir()
+	var file_name := folder + "/bestNN"
+	var file = FileAccess.open(file_name, FileAccess.WRITE)
 	if not file:
-		return
+		return false
+	
 	var save_dict = {
 		networkShape = [],
 		layers = [],
@@ -61,12 +64,16 @@ func saveNN():
 	
 	file.store_line(JSON.stringify(save_dict))
 	file.close()
+	return true
 
 
 func loadNN():
-	var file = FileAccess.open("res://Data/bestNN", FileAccess.READ)
+	var folder := OS.get_executable_path().get_base_dir()
+	var file_name := folder + "/bestNN"
+	var file = FileAccess.open(file_name, FileAccess.READ)
 	if not file:
-		return
+		return false
+	
 	var json := JSON.new()
 	json.parse(file.get_line())
 	var save_dict := json.get_data() as Dictionary
@@ -81,6 +88,7 @@ func loadNN():
 		layers[-1].dict_to_layer(save_dict.layers[i])
 	
 	file.close()
+	return true
 
 
 class Layer:
@@ -93,6 +101,24 @@ class Layer:
 	var weightsVelocities : Array[Array]
 	var biasesVelocities : Array
 	var maxVelocity
+	
+	
+	func _init(_n_inputs, _n_neurons):
+		self.n_inputs = _n_inputs
+		self.n_neurons = _n_neurons
+		
+		weightsArray = []
+		biasesArray = []
+		for i in range(n_neurons):
+			var row = []
+			var row_v = []
+			for j in range(n_inputs):
+				row.append(0.0)
+				row_v.append(0.0)
+			weightsArray.append(row)
+			weightsVelocities.append(row_v)
+			biasesArray.append(0.0)
+			biasesVelocities.append(0.0)
 	
 	
 	func layer_to_dict():
@@ -129,24 +155,6 @@ class Layer:
 			for weight in weights:
 				tmp_array.push_back(str_to_var(weight))
 			weightsArray.push_back(tmp_array)
-	
-	
-	func _init(_n_inputs, _n_neurons):
-		self.n_inputs = _n_inputs
-		self.n_neurons = _n_neurons
-		
-		weightsArray = []
-		biasesArray = []
-		for i in range(n_neurons):
-			var row = []
-			var row_v = []
-			for j in range(n_inputs):
-				row.append(0.0)
-				row_v.append(0.0)
-			weightsArray.append(row)
-			weightsVelocities.append(row_v)
-			biasesArray.append(0.0)
-			biasesVelocities.append(0.0)
 	
 	
 	func forward(inputsArray : Array):
@@ -189,10 +197,14 @@ class Layer:
 	func PSO_MutateLayer(inertia_weight : float, cognitive_p : float, social_p: float,  best_particular : Layer, best_global : Layer):
 		for i in range(n_neurons):
 			for j in range(n_inputs):
-				weightsVelocities[i][j] = inertia_weight * weightsVelocities[i][j] + cognitive_p * randf_range(0, 1.0) * (best_particular.weightsArray[i][j] - weightsArray[i][j]) + social_p * randf_range(0, 1.0) * (best_global.weightsArray[i][j] - weightsArray[i][j]) 
+				weightsVelocities[i][j] = inertia_weight * weightsVelocities[i][j] \
+				+ cognitive_p * randf_range(0, 1.0) * (best_particular.weightsArray[i][j] - weightsArray[i][j]) \
+				+ social_p * randf_range(0, 1.0) * (best_global.weightsArray[i][j] - weightsArray[i][j]) 
 				weightsArray[i][j] += weightsVelocities[i][j]
 			
-			biasesVelocities[i] = inertia_weight * biasesVelocities[i] + cognitive_p * randf_range(0, 1.0) * (best_particular.biasesArray[i] - biasesArray[i]) + social_p * randf_range(0, 1.0) * (best_global.biasesArray[i] - biasesArray[i]) 
+			biasesVelocities[i] = inertia_weight * biasesVelocities[i] \
+			+ cognitive_p * randf_range(0, 1.0) * (best_particular.biasesArray[i] - biasesArray[i]) \
+			+ social_p * randf_range(0, 1.0) * (best_global.biasesArray[i] - biasesArray[i]) 
 			biasesArray[i] += biasesVelocities[i]
 
 

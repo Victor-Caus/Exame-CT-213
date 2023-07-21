@@ -15,7 +15,7 @@ PSO = "res://space_challenge/Environments/space_PSO.tscn"
 DQN = "res://space_challenge/Environments/space_DQN.tscn"
 DQN2 = "res://space_challenge/Environments/space_DQN2.tscn"
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -24,7 +24,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.223529, 0.227451, 0.501961, 1)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="ButtonsContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -38,24 +38,24 @@ offset_bottom = 50.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ES" type="Button" parent="VBoxContainer"]
+[node name="ES" type="Button" parent="ButtonsContainer"]
 layout_mode = 2
 text = "Simple Evolution Strategy"
 
-[node name="PSO" type="Button" parent="VBoxContainer"]
+[node name="PSO" type="Button" parent="ButtonsContainer"]
 layout_mode = 2
 text = "Particle Swarm Optimization"
 
-[node name="DQN" type="Button" parent="VBoxContainer"]
+[node name="DQN" type="Button" parent="ButtonsContainer"]
 layout_mode = 2
 text = "DQN
 "
 
-[node name="DQN2" type="Button" parent="VBoxContainer"]
+[node name="DQN2" type="Button" parent="ButtonsContainer"]
 layout_mode = 2
 text = "DQN2"
 
-[connection signal="pressed" from="VBoxContainer/ES" to="." method="_on_es_pressed"]
-[connection signal="pressed" from="VBoxContainer/PSO" to="." method="_on_pso_pressed"]
-[connection signal="pressed" from="VBoxContainer/DQN" to="." method="_on_dqn_pressed"]
-[connection signal="pressed" from="VBoxContainer/DQN2" to="." method="_on_dqn_2_pressed"]
+[connection signal="pressed" from="ButtonsContainer/ES" to="." method="_on_es_pressed"]
+[connection signal="pressed" from="ButtonsContainer/PSO" to="." method="_on_pso_pressed"]
+[connection signal="pressed" from="ButtonsContainer/DQN" to="." method="_on_dqn_pressed"]
+[connection signal="pressed" from="ButtonsContainer/DQN2" to="." method="_on_dqn_2_pressed"]

@@ -1,7 +1,6 @@
 extends Button
 
-var increase 
-# Called when the region is pressed
+
 func _on_pressed():
 	var spaceship_view = $"../Spaceship View"
 	var pivot = $"../../Pivot"
@@ -13,4 +12,4 @@ func _on_pressed():
 	camera.position.x = 0
 	camera.position.y = 0
 	camera.rotation.y = 0
-	spaceship_view.view2 = false
+	spaceship_view.on = false

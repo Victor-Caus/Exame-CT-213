@@ -5,7 +5,7 @@ class_name NN_DQN
 @export var networkShape : Array[int]
 var layers : Array
 
-
+# Called when the node enters the scene tree for the first time.
 func _ready():
 	layers = []
 	for i in range(networkShape.size() - 1):
@@ -40,9 +40,12 @@ func copyLayers() -> Array:
 
 # File Save and Load System
 func saveNN():
-	var file = FileAccess.open("res://Data/bestNN", FileAccess.WRITE)
+	var folder := OS.get_executable_path().get_base_dir()
+	var file_name := folder + "/bestNN"
+	var file = FileAccess.open(file_name, FileAccess.WRITE)
 	if not file:
-		return
+		return false
+	
 	var save_dict = {
 		networkShape = [],
 		layers = [],
@@ -56,12 +59,16 @@ func saveNN():
 	
 	file.store_line(JSON.stringify(save_dict))
 	file.close()
+	return true
 
 
 func loadNN():
-	var file = FileAccess.open("res://Data/bestNN", FileAccess.READ)
+	var folder := OS.get_executable_path().get_base_dir()
+	var file_name := folder + "/bestNN"
+	var file = FileAccess.open(file_name, FileAccess.READ)
 	if not file:
-		return
+		return false
+	
 	var json := JSON.new()
 	json.parse(file.get_line())
 	var save_dict := json.get_data() as Dictionary
@@ -76,6 +83,7 @@ func loadNN():
 		layers[-1].dict_to_layer(save_dict.layers[i])
 	
 	file.close()
+	return true
 
 
 class Layer:
@@ -85,6 +93,20 @@ class Layer:
 	var a : Array
 	var n_inputs : int
 	var n_neurons : int
+	
+	
+	func _init(_n_inputs, _n_neurons):
+		n_inputs = _n_inputs
+		n_neurons = _n_neurons
+		
+		weightsArray = []
+		biasesArray = []
+		for i in range(n_neurons):
+			var row = []
+			for j in range(n_inputs):
+				row.append(0.0)
+			weightsArray.append(row)
+			biasesArray.append(0.0)
 	
 	
 	func layer_to_dict():
@@ -121,22 +143,6 @@ class Layer:
 			for weight in weights:
 				tmp_array.push_back(str_to_var(weight))
 			weightsArray.push_back(tmp_array)
-	
-	
-	func _init(_n_inputs, _n_neurons):
-		n_inputs = _n_inputs
-		n_neurons = _n_neurons
-		
-		weightsArray = []
-		biasesArray = []
-		for i in range(n_neurons):
-			var row = []
-			var row_v = []
-			for j in range(n_inputs):
-				row.append(0.0)
-				row_v.append(0.0)
-			weightsArray.append(row)
-			biasesArray.append(0.0)
 	
 	
 	func forward(inputsArray : Array):
@@ -224,4 +230,3 @@ static func sigmoid(x):
 
 static func sigmoid_derivative(x):
 	return sigmoid(x) * (1.0 - sigmoid(x))
-	

@@ -6,7 +6,6 @@ extends Control
 @export_file("*.tscn") var DQN2
 
 
-
 func _on_es_pressed():
 	get_tree().change_scene_to_file(ES)
 
