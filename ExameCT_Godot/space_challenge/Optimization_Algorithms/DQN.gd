@@ -21,7 +21,6 @@ var ring_manager : Node3D
 var history = []
 
 func _ready():
-	Engine.time_scale = 5
 	ring_manager = $RingManager
 	ring_manager.ring_dist = %RingDistance.value
 	generate_first_generation()

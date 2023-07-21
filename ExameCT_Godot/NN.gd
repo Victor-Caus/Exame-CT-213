@@ -5,9 +5,6 @@ class_name NN
 @export var networkShape : Array[int]
 var layers : Array
 
-# Save and Load System:
-var autoloadNN : bool = false
-
 # PSO:
 const FIRST_MUTATE_CHANCE = 1
 const FIRST_MUTATE_AMOUT = 1
@@ -18,9 +15,6 @@ func _ready():
 	layers = []
 	for i in range(networkShape.size() - 1):
 		layers.append(Layer.new(networkShape[i], networkShape[i+1]))
-	
-	if autoloadNN:
-		layers = loadNN()
 	
 	randomize()
 
@@ -49,14 +43,14 @@ func copyLayers() -> Array:
 	
 	return tmpLayers
 
-
 # File Save and Load System
 func saveNN():
 	var file = FileAccess.open("res://Data/bestNN", FileAccess.WRITE)
+	if not file:
+		return
 	var save_dict = {
 		networkShape = [],
 		layers = [],
-
 	}
 	
 	for i in range(networkShape.size()):
@@ -71,10 +65,11 @@ func saveNN():
 
 func loadNN():
 	var file = FileAccess.open("res://Data/bestNN", FileAccess.READ)
+	if not file:
+		return
 	var json := JSON.new()
 	json.parse(file.get_line())
 	var save_dict := json.get_data() as Dictionary
-	
 	
 	networkShape = []
 	for i in range(save_dict.networkShape.size()):
@@ -98,6 +93,7 @@ class Layer:
 	var weightsVelocities : Array[Array]
 	var biasesVelocities : Array
 	var maxVelocity
+	
 	
 	func layer_to_dict():
 		var save_dict = {
@@ -152,6 +148,7 @@ class Layer:
 			biasesArray.append(0.0)
 			biasesVelocities.append(0.0)
 	
+	
 	func forward(inputsArray : Array):
 		nodeArray = []
 		for i in range(n_neurons):
@@ -173,8 +170,8 @@ class Layer:
 			for j in range(n_inputs):
 				weightsArray[i][j] = randfn(weightsArray[i][j], deviation)
 			biasesArray[i] = randfn(biasesArray[i], deviation)
-
-
+	
+	
 	func PSO_InitializeLayer(mutationChance : float, mutationAmount : float, maxVel: float):
 		for i in range(n_neurons):
 			for j in range(n_inputs):
@@ -203,9 +200,11 @@ func mutateNetwork(deviation : float):
 	for layer in layers:
 		layer.mutateLayer(deviation)
 
+
 func PSO_Initialize():
 	for layer in layers:
 			layer.PSO_InitializeLayer(FIRST_MUTATE_CHANCE, FIRST_MUTATE_AMOUT, MAX_VEL) # Hyperparameters!
+
 
 func PSO(inertia_weight : float, cognitive_p : float, social_p: float, best_global : NN):
 	for i in range(layers.size()):

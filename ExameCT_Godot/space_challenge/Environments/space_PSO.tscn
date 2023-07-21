@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://ctluyj2ir5gjj" path="res://Ring_Test/ring_manager.tscn" id="3_ppadj"]
 [ext_resource type="Script" path="res://space_challenge/UI/SaveBestNN.gd" id="4_d3taf"]
 [ext_resource type="Script" path="res://space_challenge/UI/LoadBestNN.gd" id="5_h3ua5"]
-[ext_resource type="Script" path="res://space_challenge/Environments/Scripts/ExportConvergency.gd" id="6_4wc55"]
+[ext_resource type="Script" path="res://space_challenge/Environments/ExportConvergency.gd" id="6_eda1j"]
 [ext_resource type="Script" path="res://space_challenge/UI/global view.gd" id="7_w24k7"]
 [ext_resource type="Script" path="res://space_challenge/UI/Spaceship View.gd" id="8_txn3b"]
 [ext_resource type="Script" path="res://space_challenge/UI/RingDistance.gd" id="9_8hlej"]
@@ -71,7 +71,7 @@ offset_left = -215.0
 offset_bottom = 31.0
 grow_horizontal = 0
 text = "Export Convergency History"
-script = ExtResource("6_4wc55")
+script = ExtResource("6_eda1j")
 
 [node name="Global View" type="Button" parent="CanvasLayer"]
 offset_left = 294.0

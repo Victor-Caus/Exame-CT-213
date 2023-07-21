@@ -5,17 +5,12 @@ class_name NN_DQN
 @export var networkShape : Array[int]
 var layers : Array
 
-# Save and Load System:
-var autoloadNN : bool = false
 
 func _ready():
 	layers = []
 	for i in range(networkShape.size() - 1):
 		layers.append(Layer.new(networkShape[i], networkShape[i+1]))
 	
-	if autoloadNN:
-		layers = loadNN()
-		
 	randomize()
 
 
@@ -43,10 +38,11 @@ func copyLayers() -> Array:
 	
 	return tmpLayers
 
-
 # File Save and Load System
 func saveNN():
 	var file = FileAccess.open("res://Data/bestNN", FileAccess.WRITE)
+	if not file:
+		return
 	var save_dict = {
 		networkShape = [],
 		layers = [],
@@ -61,8 +57,11 @@ func saveNN():
 	file.store_line(JSON.stringify(save_dict))
 	file.close()
 
+
 func loadNN():
 	var file = FileAccess.open("res://Data/bestNN", FileAccess.READ)
+	if not file:
+		return
 	var json := JSON.new()
 	json.parse(file.get_line())
 	var save_dict := json.get_data() as Dictionary
@@ -78,6 +77,7 @@ func loadNN():
 	
 	file.close()
 
+
 class Layer:
 	var weightsArray : Array[Array]
 	var biasesArray : Array
@@ -85,6 +85,7 @@ class Layer:
 	var a : Array
 	var n_inputs : int
 	var n_neurons : int
+	
 	
 	func layer_to_dict():
 		var save_dict = {
@@ -122,9 +123,9 @@ class Layer:
 			weightsArray.push_back(tmp_array)
 	
 	
-	func _init(n_inputs, n_neurons):
-		self.n_inputs = n_inputs
-		self.n_neurons = n_neurons
+	func _init(_n_inputs, _n_neurons):
+		n_inputs = _n_inputs
+		n_neurons = _n_neurons
 		
 		weightsArray = []
 		biasesArray = []
@@ -137,6 +138,7 @@ class Layer:
 			weightsArray.append(row)
 			biasesArray.append(0.0)
 	
+	
 	func forward(inputsArray : Array):
 		z = []
 		for i in range(n_neurons):
@@ -147,12 +149,15 @@ class Layer:
 			node += biasesArray[i]
 			z.append(node)
 	
+	
 	func activation():
 		a = []
 		for i in range(z.size()):
 			a.append(NN_DQN.sigmoid(z[i]))
 	
+	
 	func mutateLayer(deviation : float):
+		# Previous parameters are the mean of the new parameters
 		for i in range(n_neurons):
 			for j in range(n_inputs):
 				weightsArray[i][j] = randfn(weightsArray[i][j], deviation)
@@ -165,12 +170,14 @@ func mutateNetwork(deviation : float):
 
 
 func compute_gradient(states, targets):
-	var final_gradient = [] # Gradient has the same shape as NN
+	var final_gradient = []
+	# Gradient has the same shape as NN
 	for l in range(networkShape.size() - 1):
 		final_gradient.append(Layer.new(networkShape[l], networkShape[l+1]))
 	
 	for i in range(states.size()):
-		var gradient = []  # Gradient has the same shape as NN
+		var gradient = []
+		# Gradient has the same shape as NN
 		for l in range(networkShape.size() - 1):
 			gradient.append(Layer.new(networkShape[l], networkShape[l+1]))
 		var output = brain(states[i])
@@ -189,7 +196,7 @@ func compute_gradient(states, targets):
 				var delta_j = 0
 				for p in range(networkShape[l+2]):
 					delta_j += gradient[l+1].weightsArray[p][j] * gradient[l+1].biasesArray[p]
-				delta_j *= sigmoid_derivative(layers[l].z[j])
+				delta_j *= NN_DQN.sigmoid_derivative(layers[l].z[j])
 				gradient[l].biasesArray[j] = delta_j
 				final_gradient[l].biasesArray[j] += gradient[l].biasesArray[j]/states.size()
 				for k in networkShape[l]:
@@ -198,7 +205,7 @@ func compute_gradient(states, targets):
 					else:
 						gradient[l].weightsArray[j][k] = delta_j * layers[l-1].a[k]
 					final_gradient[l].weightsArray[j][k] += gradient[l].weightsArray[j][k]/states.size()
-
+	
 	return final_gradient
 
 
@@ -217,19 +224,4 @@ static func sigmoid(x):
 
 static func sigmoid_derivative(x):
 	return sigmoid(x) * (1.0 - sigmoid(x))
-
-
-func to_matrix(array):
-	const OUTPUT_ENTRIES = 4 
-	const ACTION_OPTIONS = 3
-	var matrix : Array[Array] = []
-	var matrificator : int = 0
-	# Transform output of the NN into a matrix:
-	for i in range(OUTPUT_ENTRIES):
-		matrix.push_back([])
-		for j in range(ACTION_OPTIONS):
-			matrix[i].push_back(array[matrificator])
-			matrificator += 1
-	return matrix
-
-
+	

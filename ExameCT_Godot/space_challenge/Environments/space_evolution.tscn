@@ -3,9 +3,9 @@
 [ext_resource type="Script" path="res://space_challenge/Optimization_Algorithms/EvolutionStrategy.gd" id="1_8sdsy"]
 [ext_resource type="Texture2D" uid="uid://bpxcnqh5s1xr4" path="res://external_assets/SpaceSkyMap.png" id="2_qu7v3"]
 [ext_resource type="PackedScene" uid="uid://ctluyj2ir5gjj" path="res://Ring_Test/ring_manager.tscn" id="3_8g4nr"]
-[ext_resource type="Script" path="res://space_challenge/Environments/Scripts/ExportConvergency.gd" id="4_f7o7u"]
 [ext_resource type="Script" path="res://space_challenge/UI/SaveBestNN.gd" id="4_soq1i"]
 [ext_resource type="Script" path="res://space_challenge/UI/LoadBestNN.gd" id="5_u8qs5"]
+[ext_resource type="Script" path="res://space_challenge/Environments/ExportConvergency.gd" id="6_qbncu"]
 [ext_resource type="Script" path="res://space_challenge/UI/global view.gd" id="7_xmjy8"]
 [ext_resource type="Script" path="res://space_challenge/UI/Spaceship View.gd" id="8_gqwuu"]
 [ext_resource type="Script" path="res://space_challenge/UI/RingDistance.gd" id="9_gtvdg"]
@@ -71,7 +71,7 @@ offset_left = -215.0
 offset_bottom = 31.0
 grow_horizontal = 0
 text = "Export Convergency History"
-script = ExtResource("4_f7o7u")
+script = ExtResource("6_qbncu")
 
 [node name="Global View" type="Button" parent="CanvasLayer"]
 offset_left = 294.0
