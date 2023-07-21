@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://d4fokuthcxwyd"]
+[gd_scene load_steps=17 format=3 uid="uid://d4fokuthcxwyd"]
 
 [ext_resource type="Script" path="res://space_challenge/Optimization_Algorithms/DQN.gd" id="1_dkf08"]
 [ext_resource type="Texture2D" uid="uid://bpxcnqh5s1xr4" path="res://external_assets/SpaceSkyMap.png" id="2_m3ncy"]
@@ -11,7 +11,6 @@
 [ext_resource type="Script" path="res://space_challenge/UI/RingDistance.gd" id="9_xk4bw"]
 [ext_resource type="Script" path="res://space_challenge/UI/RingRadius.gd" id="10_mgm4o"]
 [ext_resource type="Script" path="res://space_challenge/UI/TimePerRing.gd" id="11_htyoh"]
-[ext_resource type="Script" path="res://space_challenge/UI/StandardDeviation.gd" id="12_510nd"]
 [ext_resource type="Script" path="res://space_challenge/UI/TimeLeft.gd" id="13_aiacs"]
 [ext_resource type="Script" path="res://space_challenge/UI/Pivot.gd" id="14_hfyrb"]
 
@@ -27,7 +26,8 @@ sky = SubResource("Sky_tqprb")
 
 [node name="space_DQN" type="Node3D"]
 script = ExtResource("1_dkf08")
-spaceship_scene = "res://space_challenge/Spaceships(Agents)/spaceship_DQN2.tscn"
+spaceship_scene = "res://space_challenge/Spaceships(Agents)/spaceship_DQN.tscn"
+Q_TARGET_TIME = 60
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.875042, -0.418578, 0.24309, 0, 0.502205, 0.864748, -0.484046, -0.756692, 0.439451, 0, 11.0538, 7.25927)
@@ -135,21 +135,6 @@ prefix = "Time per ring:"
 custom_arrow_step = 1.0
 script = ExtResource("11_htyoh")
 
-[node name="StandardDeviation" type="SpinBox" parent="CanvasLayer"]
-unique_name_in_owner = true
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -200.0
-offset_top = 144.0
-offset_bottom = 175.0
-grow_horizontal = 0
-step = 0.01
-value = 0.1
-prefix = "Deviation:       "
-custom_arrow_step = 1.0
-script = ExtResource("12_510nd")
-
 [node name="TimeLeft" type="Label" parent="CanvasLayer"]
 anchors_preset = 5
 anchor_left = 0.5
@@ -176,4 +161,3 @@ current = true
 [connection signal="value_changed" from="CanvasLayer/RingDistance" to="CanvasLayer/RingDistance" method="_on_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/RingRadius" to="CanvasLayer/RingRadius" method="_on_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/TimePerRing" to="CanvasLayer/TimePerRing" method="_on_value_changed"]
-[connection signal="value_changed" from="CanvasLayer/StandardDeviation" to="CanvasLayer/StandardDeviation" method="_on_value_changed"]

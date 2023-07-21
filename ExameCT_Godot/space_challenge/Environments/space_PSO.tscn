@@ -29,9 +29,6 @@ sky = SubResource("Sky_tqprb")
 script = ExtResource("1_ymlpp")
 spaceship_scene = "res://space_challenge/Spaceships(Agents)/spaceship.tscn"
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.915838, 0, 0.401548, 0, 1, 0, -0.401548, 0, 0.915838, 6.06924, 2.19645, 10.3701)
-
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.875042, -0.418578, 0.24309, 0, 0.502205, 0.864748, -0.484046, -0.756692, 0.439451, 0, 11.0538, 7.25927)
 

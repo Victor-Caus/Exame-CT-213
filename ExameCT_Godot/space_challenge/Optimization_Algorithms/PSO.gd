@@ -5,7 +5,6 @@ extends Node3D
 
 @onready var radius : float = %RingRadius.value
 @onready var time_per_ring : float = %TimePerRing.value
-@onready var deviation : float = %StandardDeviation.value
 @onready var selection_time = time_per_ring * 2
 
 const QUANTITY = 50

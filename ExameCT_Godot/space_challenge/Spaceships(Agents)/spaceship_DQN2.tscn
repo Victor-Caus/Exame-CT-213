@@ -18,7 +18,7 @@ material = SubResource("StandardMaterial3D_0otik")
 [node name="Spaceship_DQN2" type="RigidBody3D"]
 collision_mask = 2
 script = ExtResource("1_rt7d0")
-gamma = 0.99
+gamma = 0.995
 learning_rate = 0.2
 
 [node name="NN_DQN" type="Node" parent="."]

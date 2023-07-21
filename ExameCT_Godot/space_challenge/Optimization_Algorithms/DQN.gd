@@ -5,13 +5,12 @@ extends Node3D
 
 @onready var radius : float = %RingRadius.value
 @onready var time_per_ring : float = %TimePerRing.value
-@onready var deviation : float = %StandardDeviation.value
 @onready var selection_time = time_per_ring * 2
 
 @export var Q_TARGET_TIME = 1
 # Constants
 const QUANTITY = 1
-const GLIE_RATE = 0.95
+const GLIE_RATE = 0.99
 
 var epoche : int = 0
 var time := 0.0
@@ -22,6 +21,7 @@ var ring_manager : Node3D
 var history = []
 
 func _ready():
+	Engine.time_scale = 5
 	ring_manager = $RingManager
 	ring_manager.ring_dist = %RingDistance.value
 	generate_first_generation()
@@ -78,7 +78,7 @@ func natural_selection():
 	epoche += 1
 
 
-func reset_spaceship(spaceship : Spaceship_DQN2):
+func reset_spaceship(spaceship):
 	spaceship.position = Vector3.ZERO
 	spaceship.rotation = Vector3.ZERO
 	spaceship.linear_velocity = Vector3.ZERO
