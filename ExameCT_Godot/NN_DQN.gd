@@ -187,6 +187,7 @@ func compute_gradient(states, targets):
 		for l in range(networkShape.size() - 1):
 			gradient.append(Layer.new(networkShape[l], networkShape[l+1]))
 		var output = brain(states[i])
+		
 		# Output layer
 		for j in networkShape[-1]:
 			var delta_j = output[j] - targets[i][j]
@@ -195,6 +196,7 @@ func compute_gradient(states, targets):
 			for k in networkShape[-2]:
 				gradient[-1].weightsArray[j][k] = delta_j * layers[-2].a[k]
 				final_gradient[-1].weightsArray[j][k] += gradient[-1].weightsArray[j][k]/states.size()
+		
 		# Hidden layers
 		for l in range(networkShape.size() - 3, -1, -1):
 			# l = 0 is the first hidden layer, l = networkShape.size() - 2 is the output layer

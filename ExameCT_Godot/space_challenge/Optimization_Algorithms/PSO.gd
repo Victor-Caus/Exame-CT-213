@@ -2,17 +2,14 @@ extends Node3D
 
 @export_file("*.tscn") var spaceship_scene
 @export var spaceships : Array[Node]
+var ring_manager : Node3D
 
 @onready var radius : float = %RingRadius.value
 @onready var time_per_ring : float = %TimePerRing.value
+
 @onready var selection_time = time_per_ring * 2
 
 const QUANTITY = 50
-const SELECTED_QUANTITY = 10
-
-var iteration : int = 0
-var time := 0.0
-var ring_manager : Node3D
 
 # PSO hyperparameters
 const INITIAL_MUTATION_CHANCE = 1
@@ -23,6 +20,9 @@ const INERTIA_SCHEDULE = 0.01
 var COGNITIVE_P = 0.6 #0.6
 const SOCIAL_P = 0.8 #0.8
 
+var iteration : int = 0
+var time := 0.0
+
 # global max:
 var globalBest : NN
 var globalBestReward : float
@@ -30,6 +30,7 @@ var globalBestReward : float
 # Data
 var history = []
 
+# Called when the node enters the scene tree for the first time.
 func _ready():
 	globalBest = NN.new()
 	globalBestReward = -INF
@@ -37,7 +38,7 @@ func _ready():
 	generate_first_generation()
 	iteration = 0
 
-
+# Each physical time step:
 func _physics_process(delta):
 	time += delta
 	# Natural selection occurs every selection_time seconds
@@ -59,7 +60,6 @@ func generate_first_generation():
 		add_child(spaceship)
 		spaceships.push_back(spaceship)
 		spaceship.nn.PSO_Initialize()
-
 
 
 func natural_selection():
@@ -99,7 +99,6 @@ func natural_selection():
 	# Schedule for inertia weight
 	#INERTIA_WEIGHT = INERTIA_WEIGHT / (1 + INERTIA_SCHEDULE * iteration)
 	iteration += 1
-	
 
 
 func reset_spaceship(spaceship):

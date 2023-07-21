@@ -2,29 +2,32 @@ extends Node3D
 
 @export_file("*.tscn") var spaceship_scene
 @export var spaceships : Array[Node]
+var ring_manager : Node3D
 
 @onready var radius : float = %RingRadius.value
 @onready var time_per_ring : float = %TimePerRing.value
 @onready var deviation : float = %StandardDeviation.value
+
 @onready var selection_time = time_per_ring * 2
 
+# Constants
 const QUANTITY = 50
 const MAX_RINGS = 25
 
 var iteration : int = 0
 var time := 0.0
-var ring_manager : Node3D
 
 # Data
 var history = []
 
+# Called when the node enters the scene tree for the first time.
 func _ready():
 	ring_manager = $RingManager
 	ring_manager.ring_dist = %RingDistance.value
 	generate_first_generation()
 	iteration = 0
 
-
+# Each physical time step:
 func _physics_process(delta):
 	time += delta
 	

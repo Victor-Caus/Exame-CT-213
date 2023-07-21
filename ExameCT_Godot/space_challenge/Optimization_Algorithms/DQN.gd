@@ -2,12 +2,15 @@ extends Node3D
 
 @export_file("*.tscn") var spaceship_scene
 @export var spaceships : Array[Node]
+var ring_manager : Node3D
 
 @onready var radius : float = %RingRadius.value
 @onready var time_per_ring : float = %TimePerRing.value
+
 @onready var selection_time = time_per_ring * 2
 
 @export var Q_TARGET_TIME = 1
+
 # Constants
 const QUANTITY = 1
 const GLIE_RATE = 0.99
@@ -15,18 +18,18 @@ const GLIE_RATE = 0.99
 var epoche : int = 0
 var time := 0.0
 var q_time := 0.0
-var ring_manager : Node3D
 
 # Data
 var history = []
 
+# Called when the node enters the scene tree for the first time.
 func _ready():
 	ring_manager = $RingManager
 	ring_manager.ring_dist = %RingDistance.value
 	generate_first_generation()
 	epoche = 0
 
-
+# Each physical time step:
 func _physics_process(delta):
 	time += delta
 	q_time += delta
@@ -36,12 +39,12 @@ func _physics_process(delta):
 		natural_selection()
 		time = 0
 		selection_time = time_per_ring * 2
-		
+	
 	# Copy nn to Fixed Q-Target:
 	while q_time >= Q_TARGET_TIME:
 		q_time -= Q_TARGET_TIME
 		spaceships[0].fixed_nn.layers = spaceships[0].nn.copyLayers()
-	
+
 
 func generate_first_generation():
 	# Prepare the rings
@@ -55,6 +58,7 @@ func generate_first_generation():
 		add_child(spaceship)
 		spaceships.push_back(spaceship)
 		spaceship.nn.mutateNetwork(0.01)
+		
 		# Fixed nn starts copying the parameters of action-value:
 		spaceship.fixed_nn.layers = spaceship.nn.copyLayers()
 
@@ -88,7 +92,7 @@ func reset_spaceship(spaceship):
 	spaceship.reward = 0
 	spaceship.cumulative_reward = 0
 	spaceship.first_state = true
-	
+
 # Epsilon Decay:
 func glie_schedule(rate):
 	spaceships[0].epsilon = max(spaceships[0].epsilon*rate, spaceships[0].epsilon_min)
