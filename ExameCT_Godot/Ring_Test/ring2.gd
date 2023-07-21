@@ -9,6 +9,7 @@ const RING_SCENE_FILE = "res://Ring_Test/ring2.tscn"
 var initial_positions : Dictionary
 var ring_value
 
+
 static func spawn(root:Node, new_trans:Transform3D, radius:float):
 	var ring = load(RING_SCENE_FILE).instantiate()
 	root.add_child(ring)

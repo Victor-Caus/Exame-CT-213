@@ -7,6 +7,7 @@ func _on_pressed():
 	var file = FileAccess.open(file_name, FileAccess.WRITE)
 	if not file:
 		return
+	
 	# Take the space's history:
 	var history = get_parent().get_parent().history
 	for episode in history:
