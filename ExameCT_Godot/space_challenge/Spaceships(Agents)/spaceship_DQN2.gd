@@ -7,7 +7,6 @@ const THRUST = 50.0
 const TURN_PITCH = 10.0
 const TURN_YAW = 2.0
 const TURN_ROLL = 5.0
-const SENSE = [-1.0 , 0.0 , 1.0] # Array that gives the "direction" of force
 
 # NN variables:
 var nn : NN_DQN # action-value
@@ -20,7 +19,6 @@ const ACTION_OPTIONS = 4
 @onready var reward := 0.0
 var target
 var next_target
-
 
 # DQN Agent attributes
 var epsilon = 1
@@ -35,14 +33,11 @@ var return_history = []
 var previous_state
 var previous_action
 
-
-
-
+# Called when the node enters the scene tree for the first time.
 func _ready():
 	nn = $NN_DQN
 	fixed_nn = $FIXED_DQN
 	randomize()
-
 
 # Each physical time step:
 func _physics_process(_delta):
@@ -57,9 +52,9 @@ func _physics_process(_delta):
 	if not first_state:
 		# Append the experience (S, A, R, S', done), but let's see if it's done:
 		if get_parent().time + _delta > get_parent().selection_time: 
-			add_to_buffer(Experience.new(previous_state, previous_action, reward, new_state,true))
+			add_to_buffer(Experience.new(previous_state, previous_action, reward, new_state, true))
 		else:
-			add_to_buffer(Experience.new(previous_state, previous_action, reward, new_state,false))
+			add_to_buffer(Experience.new(previous_state, previous_action, reward, new_state, false))
 	
 	# Accumulate reward:
 	cumulative_reward = gamma * cumulative_reward + reward
@@ -85,11 +80,13 @@ func state():
 	input.append_array([relative_lin_vel.x, relative_lin_vel.y, relative_lin_vel.z])
 	var relative_ang_vel = quaternion.inverse()*angular_velocity # Cartesian coordinates
 	input.append_array([relative_ang_vel.x, relative_ang_vel.y, relative_ang_vel.z])
+	
 	# First target position (in the spaceships frame os reference) 
 	var relative_pos_1 = spherical_coordinate(quaternion.inverse()*(target.position - position))
 	input.append_array([relative_pos_1.x, relative_pos_1.y, relative_pos_1.z])
 	var dir_1 = spherical_coordinate(quaternion.inverse()*target.basis.z)
 	input.append_array([dir_1.y, dir_1.z])  # Ring direction
+	
 	# Second target position (in the spaceships frame os reference) 
 	var relative_pos_2 = spherical_coordinate(quaternion.inverse()*(next_target.position - position))
 	input.append_array([relative_pos_2.x, relative_pos_2.y, relative_pos_2.z])
@@ -97,7 +94,7 @@ func state():
 	input.append_array([dir_2.y, dir_2.z]) # Ring direction
 	
 	return input
-	
+
 # Executes the mechanical action
 func impulse(action) -> void:
 	match(action[0]):
@@ -132,22 +129,27 @@ class Experience:
 	var reward
 	var new_state
 	var done : bool
-	func _init(previous_state, action, reward, new_state,done):
-		self.previous_state = previous_state
-		self.action = action
-		self.reward = reward
-		self.new_state = new_state
-		self.done = done
+	
+	
+	func _init(_previous_state, _action, _reward, _new_state, _done):
+		previous_state = _previous_state
+		action = _action
+		reward = _reward
+		new_state = _new_state
+		done = _done
+
 
 func add_to_buffer(item):
 	replay_buffer.append(item)
 	if replay_buffer.size() > BUFFER_SIZE:
 		replay_buffer.pop_front()
 
+
 func pick_random():
 	var indices = []
 	for i in range(BATCH_SIZE):
 		indices.append(randi() % replay_buffer.size())
+	
 	var minibatch = []
 	for i in indices:
 		minibatch.append(replay_buffer[i])
@@ -159,33 +161,28 @@ func replay():
 	var states = []
 	var targets = []
 	for experience in minibatch:
-		var previous_state = experience.previous_state
-		var actions = experience.action
-		var reward = experience.reward
-		var new_state = experience.new_state
-		var target = to_matrix(fixed_nn.brain(previous_state))
-		var output_matrix = to_matrix(fixed_nn.brain(new_state))
+		var r_previous_state = experience.previous_state
+		var r_actions = experience.action
+		var r_reward = experience.reward
+		var r_new_state = experience.new_state
+		var r_target = to_matrix(fixed_nn.brain(r_previous_state))
+		var r_output_matrix = to_matrix(fixed_nn.brain(r_new_state))
 		for i in range(OUTPUT_ENTRIES):
 			if experience.done:
-				target[i][actions[i]] = reward
+				r_target[i][r_actions[i]] = r_reward
 			else:
 				# Fixed Q-Target:
-				target[i][actions[i]] = reward + gamma * (output_matrix[i]).max()
-			targets.append(to_array(target))
+				r_target[i][r_actions[i]] = r_reward + gamma * (r_output_matrix[i]).max()
+			targets.append(to_array(r_target))
 		# Filtering out states for training
-		states.append(previous_state)
+		states.append(r_previous_state)
 		
 	nn.backpropagation(states, targets)
-	#var history = self.model.fit(np.array(states), np.array(targets), epochs=1, verbose=0)
-	# Keeping track of loss
-	#var loss = history.history['loss'][0]
-	pass
 
 # Reward given for each step:
 func instantaneous_reward():
 	# Punish the ships that got to far from their target 
 	return -0.00001 * position.distance_to(get_parent().ring_manager.rings[-2].position)
-
 
 # Utils:
 func argmax(array):
@@ -197,6 +194,7 @@ func argmax(array):
 			max_index = i
 	return max_index
 
+
 func to_matrix(array):
 	var matrix : Array[Array] = []
 	var matrificator : int = 0
@@ -207,7 +205,8 @@ func to_matrix(array):
 			matrix[i].push_back(array[matrificator])
 			matrificator += 1
 	return matrix
-	
+
+
 func to_array(matrix):
 	var array = []
 	# Transform output of the NN into a matrix:

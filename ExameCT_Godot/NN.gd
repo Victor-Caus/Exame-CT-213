@@ -163,7 +163,7 @@ class Layer:
 			var node = 0.0
 			for j in range(n_inputs):
 				node += weightsArray[i][j] * inputsArray[j]
-		
+			
 			node += biasesArray[i]
 			nodeArray.append(node)
 	
