@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://ctluyj2ir5gjj"]
-
-[ext_resource type="Script" path="res://Ring_Test/ring_manager.gd" id="1_oe4ax"]
-
-[node name="RingManager" type="Node3D"]
-script = ExtResource("1_oe4ax")

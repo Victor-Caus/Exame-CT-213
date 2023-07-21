@@ -11,9 +11,9 @@ config_version=5
 [application]
 
 config/name="ExameCT_Godot"
-run/main_scene="res://space_challenge/UI/main_menu.tscn"
+run/main_scene="res://UI/main_menu.tscn"
 config/features=PackedStringArray("4.1", "Forward Plus")
-config/icon="res://external_assets/2D_assets/icon.svg"
+config/icon="res://external_assets/icon.svg"
 
 [display]
 
