@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://duxtt4i116bae"]
+[gd_scene load_steps=17 format=3 uid="uid://duxtt4i116bae"]
 
 [ext_resource type="Script" path="res://space_challenge/Optimization_Algorithms/PSO.gd" id="1_ymlpp"]
 [ext_resource type="Texture2D" uid="uid://bpxcnqh5s1xr4" path="res://external_assets/SpaceSkyMap.png" id="2_mkyag"]
@@ -11,7 +11,6 @@
 [ext_resource type="Script" path="res://space_challenge/UI/RingDistance.gd" id="9_8hlej"]
 [ext_resource type="Script" path="res://space_challenge/UI/RingRadius.gd" id="10_tljks"]
 [ext_resource type="Script" path="res://space_challenge/UI/TimePerRing.gd" id="11_gdjce"]
-[ext_resource type="Script" path="res://space_challenge/UI/StandardDeviation.gd" id="12_qc87l"]
 [ext_resource type="Script" path="res://space_challenge/UI/TimeLeft.gd" id="13_bhwvi"]
 [ext_resource type="Script" path="res://space_challenge/UI/Pivot.gd" id="14_fmhtm"]
 
@@ -135,21 +134,6 @@ prefix = "Time per ring:"
 custom_arrow_step = 1.0
 script = ExtResource("11_gdjce")
 
-[node name="StandardDeviation" type="SpinBox" parent="CanvasLayer"]
-unique_name_in_owner = true
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -200.0
-offset_top = 144.0
-offset_bottom = 175.0
-grow_horizontal = 0
-step = 0.01
-value = 0.1
-prefix = "Deviation:       "
-custom_arrow_step = 1.0
-script = ExtResource("12_qc87l")
-
 [node name="TimeLeft" type="Label" parent="CanvasLayer"]
 anchors_preset = 5
 anchor_left = 0.5
@@ -176,4 +160,3 @@ current = true
 [connection signal="value_changed" from="CanvasLayer/RingDistance" to="CanvasLayer/RingDistance" method="_on_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/RingRadius" to="CanvasLayer/RingRadius" method="_on_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/TimePerRing" to="CanvasLayer/TimePerRing" method="_on_value_changed"]
-[connection signal="value_changed" from="CanvasLayer/StandardDeviation" to="CanvasLayer/StandardDeviation" method="_on_value_changed"]
