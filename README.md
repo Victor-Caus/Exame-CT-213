@@ -6,6 +6,8 @@ In this project, an Neural Network is trained to navigate an agent in 3D space i
 - DQN with simultaneous actions
 - DQN with mutually exclusive actions
 The biggest challenges of this work was to implement from the learning algorithms scratch. We didn't manage to make the examples with DQN work correctly.
+
+Article: https://drive.google.com/drive/folders/1gM4YKetfbv1SZmB5_iWyULnK7TrMj5fy
 ## Organization
 This project is organized into the following directories and files:
 - 'Enviroments': Contains a scene for each aproach (ES, PSO, DQN and DQN2)
